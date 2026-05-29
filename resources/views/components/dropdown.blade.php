@@ -1,4 +1,4 @@
-@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white dark:bg-gray-700'])
+@props(['align' => 'right', 'width' => '48', 'contentClasses' => ''])
 
 @php
 $alignmentClasses = match ($align) {
@@ -6,28 +6,24 @@ $alignmentClasses = match ($align) {
 'top' => 'origin-top',
 default => 'ltr:origin-top-right rtl:origin-top-left end-0',
 };
-
 $width = match ($width) {
-'48' => 'w-48',
-default => $width,
+    '48' => 'w-48',
+    '56' => 'w-56',
+    default => $width,
 };
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div class="flex" @click="open = ! open">
+    <div @click="open = !open">
         {{ $trigger }}
     </div>
 
-
-
-    <div x-show="open" x-transition:enter="transition ease-out duration-200"
+    <div x-show="open" x-transition:enter="transition ease-out duration-150"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        class="absolute z-50 mt-2 {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }}" style="display: none;"
-        @click="open = false">
-        <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
-            {{ $content }}
-        </div>
+        x-transition:leave-end="opacity-0 scale-95" class="absolute z-50 mt-2 {{ $width }} overflow-hidden rounded-lg border py-1 shadow-lg ring-1 ring-black/5 {{ $alignmentClasses }} {{ $contentClasses }}
+            border-gray-200 bg-white text-gray-700
+            dark:border-white/10 dark:bg-black dark:text-gray-300 dark:ring-white/10" style="display: none;" @click="open = false">
+        {{ $content }}
     </div>
 </div>

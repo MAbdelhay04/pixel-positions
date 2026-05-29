@@ -1,25 +1,36 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            Reset your password
+        </h2>
+        <p class="mt-2 text-sm text-gray-500 leading-relaxed">
+            {{ __("No problem. Enter your email address and we'll send you a reset link.") }}
+        </p>
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-5" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
         @csrf
 
-        <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-text-input id="email" type="email" name="email" :value="old('email')"
+                required autofocus placeholder="you@example.com" />
+            <x-input-error :messages="$errors->get('email')" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+        <div class="pt-1">
+            <x-primary-button class="w-full justify-center py-3 text-sm normal-case tracking-normal font-semibold">
+                {{ __('Send Reset Link') }}
             </x-primary-button>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ route('login') }}"
+                class="text-sm text-gray-500 hover:text-gray-400 dark:hover:text-gray-300 underline underline-offset-2 transition-colors duration-150">
+                {{ __('Back to Sign In') }}
+            </a>
         </div>
     </form>
 </x-guest-layout>

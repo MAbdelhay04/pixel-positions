@@ -29,7 +29,7 @@
     </template>
 
     {{-- Trigger button --}}
-    <button type="button" x-on:click="open = !open" class="w-full flex items-center justify-between gap-2
+    <button type="button" x-on:click="open = !open" class="w-full cursor-pointer flex items-center justify-between gap-2
                px-3 py-2 rounded-md border text-sm text-left
                border-gray-300 dark:border-gray-700
                bg-white dark:bg-gray-900

@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\ApplicationStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Application extends Model
 {
@@ -30,5 +32,15 @@ class Application extends Model
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    public function job(): BelongsTo
+    {
+        return $this->belongsTo(JobListing::class, 'job_id');
+    }
+
+    public function candidate(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'candidate_id');
     }
 }
