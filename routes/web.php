@@ -8,21 +8,30 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/jobs');
-Route::get('jobs', [JobListingController::class, 'index'])->name('jobs.index');
 
+// Public
+Route::get('/jobs', [JobListingController::class, 'index'])->name('jobs.index');
+Route::get('/jobs/{job}', [JobListingController::class, 'show'])->name('jobs.show');
+Route::get('/tags/{tag}/jobs', [JobListingController::class, 'indexByTag'])->name('jobs.index_tag');
+
+// Authenticated
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('jobs', JobListingController::class)
-        ->except(['index', 'show'])
-        ->middleware('role:' . UserRole::Employer->value);
+    // Employer only
+    Route::middleware('role:' . UserRole::Employer->value)->group(function () {
+        Route::resource('jobs', JobListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/jobs/{job}/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
+    });
 
-    Route::get('jobs/{job}', [JobListingController::class, 'show'])->name('jobs.show');
-
-    Route::resource('applications', ApplicationController::class)
-        ->middleware('role:' .  UserRole::Candidate->value);
+    // Candidate only
+    Route::middleware('role:' . UserRole::Candidate->value)->group(function () {
+        Route::post('/jobs/{job}/applications', [ApplicationController::class, 'store'])->name('applications.store');
+    });
 });
 
+// Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\JobStatus;
 use App\Enums\UserRole;
 use App\Models\JobListing;
 use App\Models\User;
@@ -31,5 +32,12 @@ class JobListingPolicy
     public function delete(User $user, JobListing $jobListing): bool
     {
         return $user->id === $jobListing->employer_id;
+    }
+
+    public function apply(User $user, JobListing $jobListing): bool
+    {
+        return $user->role === UserRole::Candidate
+            && $jobListing->status === JobStatus::Open
+            && !$jobListing->applications()->where('candidate_id', $user->id)->exists();
     }
 }

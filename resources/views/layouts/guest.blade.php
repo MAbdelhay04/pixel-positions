@@ -9,7 +9,7 @@
         <div class="flex min-h-screen flex-col items-center px-4 pt-6 sm:justify-center sm:pt-0">
             <div class="mb-8">
                 <a href={{ route('jobs.index') }}>
-                    <x-application-logo width="120" />
+                    <x-app-logo width="120" />
                 </a>
             </div>
 

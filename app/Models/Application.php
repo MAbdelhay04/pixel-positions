@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Enums\ApplicationStatus;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
+#[Fillable(['job_id', 'candidate_id', 'cover_letter', 'resume', 'status'])]
 class Application extends Model
 {
     use HasUuids;
@@ -42,5 +43,10 @@ class Application extends Model
     public function candidate(): BelongsTo
     {
         return $this->belongsTo(User::class, 'candidate_id');
+    }
+
+    public function employer()
+    {
+        return $this->hasOneThrough(User::class, JobListing::class, 'id', 'id', 'job_id', 'employer_id');
     }
 }

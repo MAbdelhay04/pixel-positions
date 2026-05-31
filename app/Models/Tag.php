@@ -23,8 +23,14 @@ class Tag extends Model
             'name' => Lowercase::class,
         ];
     }
+
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+
     public function jobs(): BelongsToMany
     {
-        return $this->belongsToMany(JobListing::class, 'job_tag');
+        return $this->belongsToMany(JobListing::class, 'job_tag', 'tag_id', 'job_id');
     }
 }

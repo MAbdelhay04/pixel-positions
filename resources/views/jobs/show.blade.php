@@ -36,7 +36,7 @@
     <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-[1fr_18rem]">
             <section class="space-y-6">
-                <x-job-card-wide :job="$job" :withLink="false" />
+                <x-job-card-wide :job="$job" :withLink="false" :withApply="false" />
 
                 <div
                     class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
@@ -76,11 +76,23 @@
                     @endif
                 </dl>
                 @if ($job->url)
-                <a href="{{ $job->url }}" target="_blank" rel="noreferrer"
-                    class="mt-6 inline-flex w-full items-center justify-center rounded-lg border border-gray-900 bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-gray-800 dark:border-white/10 dark:bg-white dark:text-gray-950 dark:hover:bg-gray-200">
-                    {{ __('Open Application') }}
+                <a href="{{ $job->url }}" target="_blank" rel="noopener noreferrer" class="mt-3 w-full">
+                    <x-primary-button class="w-full mt-3">
+                        {{ __('Open Application') }}
+                    </x-primary-button>
                 </a>
                 @endif
+                @can('apply', $job)
+                <x-primary-button x-data="" x-on:click="$dispatch('open-modal', 'apply-{{ $job->id }}')"
+                    class="mt-3 w-full">
+                    {{ __('Apply Now') }}
+                </x-primary-button>
+                <x-apply-modal :job="$job" />
+                @else
+                <x-secondary-button disabled class="mt-3 w-full">
+                    {{ __('Already Applied') }}
+                </x-secondary-button>
+                @endcan
             </aside>
         </div>
     </main>

@@ -4,7 +4,7 @@
         <div class="flex h-16 items-center justify-between gap-4">
             <div class="flex min-w-0 items-center gap-6 lg:gap-10">
                 <a href="{{ route('jobs.index') }}" class="flex shrink-0 items-center">
-                    <x-application-logo width="104" />
+                    <x-app-logo width="104" />
                 </a>
 
                 <div class="hidden items-center gap-6 sm:flex">

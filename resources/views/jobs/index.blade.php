@@ -8,17 +8,28 @@
                     Open roles
                 </p>
                 <h1 class="mt-3 text-4xl font-bold tracking-normal text-gray-950 dark:text-white sm:text-5xl">
+                    @if($tag ?? false)
+                    Open Jobs tagged "{{ $tag->name }}"
+                    @else
                     Find your next role
+                    @endif
                 </h1>
                 <p class="mt-4 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-400">
+                    @if($tag ?? false)
+                    Showing jobs tagged with <span class="font-semibold text-gray-950 dark:text-white">{{ $tag->name
+                        }}</span>.
+                    <a href="{{ route('jobs.index') }}" class="text-blue-700 underline dark:text-blue-400">View all
+                        jobs</a>
+                    @else
                     Browse current job listings from teams hiring through {{ config('app.name', 'Laravel') }}.
+                    @endif
                 </p>
             </div>
 
             <div
                 class="rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
-                <span class="font-semibold text-gray-950 dark:text-white">{{ $jobs->count() }}</span>
-                {{ \Illuminate\Support\Str::plural('open job', $jobs->count()) }}
+                <span class="font-semibold text-gray-950 dark:text-white">{{ $jobs->total() }}</span>
+                {{ Str::plural('open job', $jobs->total()) }}
             </div>
         </section>
 

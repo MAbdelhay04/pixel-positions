@@ -70,16 +70,34 @@ $applicationsCount = $job->applications_count ?? $job->applications()->count();
 
     @if ($job->skills->isNotEmpty() || $job->tags->isNotEmpty())
     <div class="mt-5 flex flex-wrap gap-2 border-t border-gray-100 pt-5 dark:border-white/10">
+        @if($job->skills->isNotEmpty())
+        <span class="text-xs text-gray-400 dark:text-gray-500">Skills:</span>
         @foreach ($job->skills as $skill)
-        <span
-            class="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
-            {{ $skill->name }}
-        </span>
+        <x-skill size="small" :$skill />
         @endforeach
+        @endif
 
+        @if($job->tags->isNotEmpty())
+        <span class="text-xs text-gray-400 dark:text-gray-500">Tags:</span>
         @foreach ($job->tags as $tag)
         <x-tag size="small" :$tag />
         @endforeach
+        @endif
     </div>
     @endif
+
+    @can('apply', $job)
+    <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10">
+        <x-primary-button x-data="" x-on:click="$dispatch('open-modal', 'apply-{{ $job->id }}')" class="w-full">
+            {{ __('Apply') }}
+        </x-primary-button>
+    </div>
+    <x-apply-modal :job="$job" />
+    @else
+    <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10">
+        <x-secondary-button disabled class="mt-3 w-full">
+            {{ __('Already Applied') }}
+        </x-secondary-button>
+    </div>
+    @endcan
 </x-panel>

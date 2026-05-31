@@ -1,5 +1,5 @@
-<section>
-    <header class="mb-6">
+<section class="space-y-6">
+    <header>
         <h3 class="text-base font-bold text-gray-900 dark:text-white">
             {{ __('Delete Account') }}
         </h3>
@@ -13,7 +13,7 @@
         {{ __('Delete Account') }}
     </x-danger-button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()">
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
             @method('delete')
@@ -28,7 +28,8 @@
             <div class="mb-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
                 <div class="w-3/4">
-                    <x-text-input id="password" name="password" type="password" placeholder="{{ __('Your password') }}" />
+                    <x-text-input id="password" name="password" type="password" placeholder="{{ __('Your password') }}"
+                        autocomplete="new-password" />
                 </div>
                 <x-input-error :messages="$errors->userDeletion->get('password')" />
             </div>
