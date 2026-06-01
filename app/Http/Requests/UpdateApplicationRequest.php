@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ApplicationStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class UpdateApplicationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->can('update', $this->route('application'));
     }
 
     /**
@@ -22,8 +23,19 @@ class UpdateApplicationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $application = $this->route('application');
+
         return [
-            //
+            'status' => [
+                'required',
+                'in:reviewing,interview,hired,rejected',
+                function ($attribute, $value, $fail) use ($application) {
+                    $next = ApplicationStatus::from($value);
+                    if (!$application->status->canTransitionTo($next)) {
+                        $fail(__('Invalid status transition.'));
+                    }
+                }
+            ],
         ];
     }
 }

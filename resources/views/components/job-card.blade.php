@@ -86,6 +86,7 @@ $applicationsCount = $job->applications_count ?? $job->applications()->count();
     </div>
     @endif
 
+    @auth
     @can('apply', $job)
     <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10">
         <x-primary-button x-data="" x-on:click="$dispatch('open-modal', 'apply-{{ $job->id }}')" class="w-full">
@@ -93,11 +94,13 @@ $applicationsCount = $job->applications_count ?? $job->applications()->count();
         </x-primary-button>
     </div>
     <x-apply-modal :job="$job" />
-    @else
+    @elseif ($job->hasApplied(Auth::user()))
     <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10">
         <x-secondary-button disabled class="mt-3 w-full">
             {{ __('Already Applied') }}
         </x-secondary-button>
     </div>
-    @endcan
+    @endif
+    @endauth
+
 </x-panel>

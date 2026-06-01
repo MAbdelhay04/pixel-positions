@@ -22,7 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:' . UserRole::Employer->value)->group(function () {
         Route::resource('jobs', JobListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
         Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
-        Route::get('/jobs/{job}/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
+        Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
+        Route::patch('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
+        Route::get('/applications/{application}/resume', [ApplicationController::class, 'resume'])->name('applications.resume');
     });
 
     // Candidate only

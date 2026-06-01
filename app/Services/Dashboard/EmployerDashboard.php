@@ -15,17 +15,14 @@ class EmployerDashboard implements DashboardInterface
             ->with(['employer', 'skills', 'tags', 'category'])
             ->withCount('applications')
             ->latest()
-            ->paginate();
+            ->paginate(9);
 
-        $baseQuery = $user->jobs();
+        $stats = [
+            'total'        => $user->jobs()->count(),
+            'open'         => $user->jobs()->where('status', JobStatus::Open)->count(),
+            'applications' => $user->jobs()->withCount('applications')->get()->sum('applications_count'),
+        ];
 
-        return view('dashboard.employer', [
-            'jobs' => $jobs,
-            'stats' => [
-                'total' => $baseQuery->count(),
-                'open' => $baseQuery->where('status', JobStatus::Open)->count(),
-                'applications' => $baseQuery->withCount('applications')->get()->sum('applications_count'),
-            ]
-        ]);
+        return view('dashboard.employer', compact('jobs', 'stats'));
     }
 }

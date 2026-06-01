@@ -16,6 +16,10 @@ class JobListingController extends Controller
     {
         $jobs = JobListing::with(['employer', 'skills', 'tags', 'category'])
             ->withCount('applications')
+            ->when(
+                Auth::check() && Auth::user()->isCandidate(),
+                fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
+            )
             ->where('status', JobStatus::Open)
             ->latest()
             ->paginate();
@@ -28,6 +32,10 @@ class JobListingController extends Controller
         $jobs = $tag->jobs()
             ->with(['employer', 'skills', 'tags', 'category'])
             ->withCount('applications')
+            ->when(
+                Auth::check() && Auth::user()->isCandidate(),
+                fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
+            )
             ->where('status', JobStatus::Open)
             ->latest()
             ->paginate();

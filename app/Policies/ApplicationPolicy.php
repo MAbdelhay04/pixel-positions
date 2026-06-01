@@ -22,7 +22,7 @@ class ApplicationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === UserRole::Candidate;
+        return $user->isCandidate();
     }
 
     /**

@@ -15,7 +15,7 @@ class JobListingPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === UserRole::Employer;
+        return $user->isEmployer();
     }
 
     /**
@@ -36,8 +36,13 @@ class JobListingPolicy
 
     public function apply(User $user, JobListing $jobListing): bool
     {
-        return $user->role === UserRole::Candidate
+        return $user->isCandidate()
             && $jobListing->status === JobStatus::Open
             && !$jobListing->applications()->where('candidate_id', $user->id)->exists();
+    }
+
+    public function viewApplications(User $user, JobListing $jobListing)
+    {
+        return $user->id === $jobListing->employer_id;
     }
 }

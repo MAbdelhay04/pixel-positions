@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Services\Dashboard;
 
+use App\Enums\ApplicationStatus;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class CandidateDashboard implements DashboardInterface
 {
     public function render(User $user)
     {
-        $applications = Auth::user()
-            ->applications()
+        $applications = $user->applications()
             ->with(['job', 'employer'])
             ->latest()
-            ->paginate(9);
+            ->paginate(9)
+            ->withQueryString();
 
         $stats = [
-            'total'      => $applications->total(),
-            'pending'    => Auth::user()->applications()
-                ->whereIn('status', ['submitted', 'reviewing'])
+            'total'      => $user->applications()->count(),
+            'pending'    => $user->applications()
+                ->whereIn('status', [ApplicationStatus::Submitted, ApplicationStatus::Reviewing])
                 ->count(),
-            'interviews' => Auth::user()->applications()
-                ->where('status', 'interview')
+            'interviews' => $user->applications()
+                ->where('status', ApplicationStatus::Interview)
                 ->count(),
         ];
 

@@ -46,6 +46,14 @@ class JobListing extends Model
         return $this->hasMany(Application::class, 'job_id');
     }
 
+    public function hasApplied(User $user): bool
+    {
+        if ($this->relationLoaded('applications')) {
+            return $this->applications->where('candidate_id', $user->id)->isNotEmpty();
+        }
+        return $this->applications()->where('candidate_id', $user->id)->exists();
+    }
+
     public function employer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'employer_id');

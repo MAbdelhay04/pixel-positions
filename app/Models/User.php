@@ -50,6 +50,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return ['uuid'];
     }
 
+    public function isEmployer()
+    {
+        return $this->role === UserRole::Employer;
+    }
+    public function isCandidate()
+    {
+        return $this->role === UserRole::Candidate;
+    }
+
+
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'candidate_id');
