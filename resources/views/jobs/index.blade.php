@@ -33,13 +33,25 @@
             </div>
         </section>
 
+        {{-- Search & Filters --}}
+        <div class="mt-6">
+            <x-job-search :action="($tag ?? false) ? route('jobs.index_tag',$tag) : route('jobs.index')" />
+        </div>
+
         <section class="py-10">
             @if ($jobs->isEmpty())
             <div
                 class="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center shadow-sm dark:border-white/10 dark:bg-white/5">
-                <h2 class="text-xl font-bold text-gray-950 dark:text-white">No open jobs posted yet</h2>
+                <h2 class="text-xl font-bold text-gray-950 dark:text-white">No jobs found</h2>
                 <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
+                    @if(request()->hasAny(['q', 'type', 'location']))
+                    Try adjusting your search or filters.
+
+                    <a href="{{ ($tag ?? false) ? route('jobs.index_tag',$tag) : route('jobs.index') }}"
+                        class="mt-1 inline-block text-blue-700 underline dark:text-blue-400">Clear all filters</a>
+                    @else
                     New opportunities will appear here as soon as they are published.
+                    @endif
                 </p>
             </div>
             @else
@@ -48,9 +60,9 @@
                 <x-job-card :job="$job" />
                 @endforeach
             </div>
-
             @endif
         </section>
+
         @if ($jobs->hasPages())
         <div class="mt-8">
             {{ $jobs->links() }}

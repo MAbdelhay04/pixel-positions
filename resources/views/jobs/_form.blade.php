@@ -57,19 +57,9 @@ $selectedTags = $job ? $job->tags->pluck('name')->implode(', ') : '';
                 <x-input-error :messages="$errors->get('salary_range')" />
             </div>
 
-            <div>
-                <x-input-label for="category_id" :value="__('Category')" />
-                <x-select-input id="category_id" name="category_id">
-                    <option value="">{{ __('No category') }}</option>
-                    @foreach ($categories as $category)
-                    <option value="{{ $category->id }}" @selected((string) old('category_id', $job?->category_id) ===
-                        (string) $category->id)>
-                        {{ ucwords($category->name) }}
-                    </option>
-                    @endforeach
-                </x-select-input>
-                <x-input-error :messages="$errors->get('category_id')" />
-            </div>
+            <x-single-select name="category_id"
+                :options="$categories->map(fn($c) => ['value' => $c->id, 'label' => ucwords($c->name)])->all()"
+                :selected="old('category_id', $job?->category_id ?? '')" placeholder="No category" />
 
             <div class="md:col-span-2">
                 <x-input-label for="description" :value="__('Description')" />

@@ -14,8 +14,13 @@ class EmployerDashboard implements DashboardInterface
         $jobs = $user->jobs()
             ->with(['employer', 'skills', 'tags', 'category'])
             ->withCount('applications')
+            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
+            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
+            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
+            ->when(request('status'), fn($q, $v) => $q->whereIn('status', (array) $v))
             ->latest()
-            ->paginate(9);
+            ->paginate(9)
+            ->withQueryString();
 
         $stats = [
             'total'        => $user->jobs()->count(),

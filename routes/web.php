@@ -11,7 +11,6 @@ Route::redirect('/', '/jobs');
 
 // Public
 Route::get('/jobs', [JobListingController::class, 'index'])->name('jobs.index');
-Route::get('/jobs/{job}', [JobListingController::class, 'show'])->name('jobs.show');
 Route::get('/tags/{tag}/jobs', [JobListingController::class, 'indexByTag'])->name('jobs.index_tag');
 
 // Authenticated
@@ -20,7 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Employer only
     Route::middleware('role:' . UserRole::Employer->value)->group(function () {
-        Route::resource('jobs', JobListingController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+        Route::resource('jobs', JobListingController::class)->except(['index', 'show']);
         Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
@@ -32,6 +31,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/jobs/{job}/applications', [ApplicationController::class, 'store'])->name('applications.store');
     });
 });
+
+// Public
+Route::get('/jobs/{job}', [JobListingController::class, 'show'])->name('jobs.show');
+
 
 // Profile
 Route::middleware('auth')->group(function () {

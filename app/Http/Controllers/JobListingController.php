@@ -20,9 +20,13 @@ class JobListingController extends Controller
                 Auth::check() && Auth::user()->isCandidate(),
                 fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
             )
+            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
+            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
+            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
             ->where('status', JobStatus::Open)
             ->latest()
-            ->paginate();
+            ->paginate()
+            ->withQueryString();
 
         return view('jobs.index', compact('jobs'));
     }
@@ -36,9 +40,13 @@ class JobListingController extends Controller
                 Auth::check() && Auth::user()->isCandidate(),
                 fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
             )
+            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
+            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
+            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
             ->where('status', JobStatus::Open)
             ->latest()
-            ->paginate();
+            ->paginate()
+            ->withQueryString();
 
         return view('jobs.index', compact('jobs', 'tag'));
     }
