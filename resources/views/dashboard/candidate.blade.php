@@ -16,8 +16,12 @@
         </div>
     </x-slot>
 
-    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" x-data="ajaxSearch({
+            url: '{{ route('dashboard') }}',
+            resultsSelector: '#candidate-results'
+        })">
 
+        {{-- Stats — static --}}
         <section class="mb-8 grid gap-4 sm:grid-cols-3">
             <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Applied') }}</p>
@@ -35,46 +39,29 @@
             </div>
         </section>
 
+        {{-- Search --}}
         <div class="mb-6">
             <x-application-search />
         </div>
 
-        @if ($applications->isEmpty())
-        <section
-            class="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center shadow-sm dark:border-white/10 dark:bg-white/5">
-            @if(request()->hasAny(['q', 'status', 'type', 'location']))
-            <h3 class="text-xl font-bold text-gray-950 dark:text-white">{{ __('No applications match your filters') }}
-            </h3>
-            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-                {{ __('Try adjusting or clearing your filters.') }}
-            </p>
-            <a href="{{ route('dashboard') }}"
-                class="mt-6 inline-block text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                {{ __('Clear all filters') }}
-            </a>
-            @else
-            <h3 class="text-xl font-bold text-gray-950 dark:text-white">{{ __('No applications yet') }}</h3>
-            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-                {{ __('Start browsing jobs and submit your first application.') }}
-            </p>
-            <x-primary-button type="button" onclick="window.location='{{ route('jobs.index') }}'" class="mt-6">
-                {{ __('Browse Jobs') }}
-            </x-primary-button>
-            @endif
-        </section>
-        @else
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            @foreach ($applications as $application)
-            <x-application-card :$application />
-            @endforeach
-        </section>
-
-        @if ($applications->hasPages())
-        <div class="mt-8">
-            {{ $applications->links() }}
+        {{-- Loading spinner --}}
+        <div x-show="loading" x-cloak class="flex items-center justify-center py-12">
+            <svg class="h-6 w-6 animate-spin text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
         </div>
-        @endif
-        @endif
+
+        {{-- Fetch error --}}
+        <div x-show="fetchError && searchAttempted" x-cloak
+            class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400">
+            {{ __('Something went wrong. Please try again or refresh the page.') }}
+        </div>
+
+        {{-- Results --}}
+        <div id="candidate-results" x-show="!loading">
+            @include('dashboard._candidate_results')
+        </div>
 
     </main>
 </x-app-layout>

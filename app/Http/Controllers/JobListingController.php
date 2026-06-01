@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\JobStatus;
 use App\Http\Requests\StoreJobListingRequest;
 use App\Http\Requests\UpdateJobListingRequest;
+use App\Http\Requests\UpdateJobListingStatusRequest;
 use App\Models\JobListing;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
@@ -25,8 +26,12 @@ class JobListingController extends Controller
             ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
             ->where('status', JobStatus::Open)
             ->latest()
-            ->paginate()
+            ->paginate(12)
             ->withQueryString();
+
+        if (isAjax()) {
+            return view('jobs._results', compact('jobs'));
+        }
 
         return view('jobs.index', compact('jobs'));
     }
@@ -47,6 +52,10 @@ class JobListingController extends Controller
             ->latest()
             ->paginate()
             ->withQueryString();
+
+        if (isAjax()) {
+            return view('jobs._results', compact('jobs'));
+        }
 
         return view('jobs.index', compact('jobs', 'tag'));
     }
@@ -71,7 +80,9 @@ class JobListingController extends Controller
             $job->syncTags(explode(',', $request->input('tags')));
         }
 
-        return redirect(route('jobs.show', $job));
+        return redirect()
+            ->route('jobs.show', $job)
+            ->with('success', __('Job “:title” created successfully.', ['title' => $job->title]));
     }
 
     public function show(JobListing $job)
@@ -94,13 +105,32 @@ class JobListingController extends Controller
         $job->syncTags($request->input('tags') ? explode(',', $request->input('tags')) : []);
         $job->syncSkills($request->input('skills') ? explode(',', $request->input('skills')) : []);
 
-        return redirect(route('jobs.show', $job));
+        return redirect()
+            ->route('jobs.show', $job)
+            ->with('success', __('Job “:title” updated successfully.', ['title' => $job->title]));
+    }
+
+    public function updateStatus(UpdateJobListingStatusRequest $request, JobListing $job)
+    {
+        $status = $request->enum('status', JobStatus::class);
+
+        $job->update(['status' => $status]);
+
+        return back()->with('success', __('Job “:title” status updated to :status.', [
+            'title'  => $job->title,
+            'status' => $status->label(),
+        ]));
     }
 
     public function destroy(JobListing $job)
     {
         Gate::authorize('delete', $job);
+
+        $title = $job->title;
         $job->delete();
-        return redirect(route('jobs.index'));
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', __('Job “:title” deleted successfully.', ['title' => $title]));
     }
 }

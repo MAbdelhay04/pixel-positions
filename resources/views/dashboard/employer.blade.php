@@ -15,8 +15,14 @@
             </x-primary-button>
     </x-slot>
 
-    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <main
+        class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
+        x-data="ajaxSearch({
+            url: '{{ route('dashboard') }}',
+            resultsSelector: '#employer-results'
+        })">
 
+        {{-- Stats — static --}}
         <section class="mb-8 grid gap-4 sm:grid-cols-3">
             <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total') }}</p>
@@ -39,44 +45,24 @@
             <x-job-search :action="route('dashboard')" :showStatus="true" />
         </div>
 
-        @if ($jobs->isEmpty())
-        <section
-            class="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center shadow-sm dark:border-white/10 dark:bg-white/5">
-            <h3 class="text-xl font-bold text-gray-950 dark:text-white">
-                {{ request()->hasAny(['q', 'type', 'location', 'status']) ? __('No jobs match your filters') : __('No
-                jobs yet') }}
-            </h3>
-            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-                @if(request()->hasAny(['q', 'type', 'location', 'status']))
-                {{ __('Try adjusting your search or filters.') }}
-                @else
-                {{ __('Create your first listing to start collecting applications.') }}
-                @endif
-            </p>
-            @if(request()->hasAny(['q', 'type', 'location', 'status']))
-            <a href="{{ route('dashboard') }}"
-                class="mt-4 inline-block text-sm text-blue-700 underline underline-offset-2 dark:text-blue-400">
-                {{ __('Clear all filters') }}
-            </a>
-            @else
-            <x-primary-button type="button" onclick="window.location='{{ route('jobs.create') }}'" class="mt-6">
-                {{ __('Create Job') }}
-            </x-primary-button>
-            @endif
-        </section>
-        @else
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            @foreach ($jobs as $job)
-            <x-job-card :job="$job" />
-            @endforeach
-        </section>
-
-        @if ($jobs->hasPages())
-        <div class="mt-8">
-            {{ $jobs->links() }}
+        {{-- Loading spinner --}}
+        <div x-show="loading" x-cloak class="flex items-center justify-center py-12">
+            <svg class="h-6 w-6 animate-spin text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
         </div>
-        @endif
-        @endif
+
+        {{-- Fetch error --}}
+        <div x-show="fetchError && searchAttempted" x-cloak
+            class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400">
+            {{ __('Something went wrong. Please try again or refresh the page.') }}
+        </div>
+
+        {{-- Results --}}
+        <div id="employer-results" x-show="!loading">
+            @include('dashboard._employer_results')
+        </div>
 
     </main>
 

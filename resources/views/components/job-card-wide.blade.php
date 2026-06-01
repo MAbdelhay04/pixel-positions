@@ -1,7 +1,8 @@
 @props([
-'job',
-'withLink' => true,
-'withApply' => true,
+    'job',
+    'withLink' => true,
+    'withApply' => true,
+    'withStatusUpdate' => false,
 ])
 
 @php
@@ -109,5 +110,8 @@ $applicationsCount = $job->applications_count ?? $job->applications()->count();
     @endauth
     @endif
 
+    @if ($withStatusUpdate)
+        <x-job-status-update :job="$job" compact />
+    @endif
 
 </x-panel>

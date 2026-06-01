@@ -18,7 +18,19 @@ class ApplicationController extends Controller
     {
         Gate::authorize('viewApplications', $job);
 
-        $applications = $job->applications()->with('candidate')->latest()->paginate(9)->withQueryString();
+        $applications = $job->applications()
+            ->with('candidate')
+            ->when(request('q'), fn($q, $v) => $q->whereHas('candidate', fn($q) => $q->where('name', 'like', searchLike($v))))
+            ->when(request('status'), fn($q) => $q->whereIn('status', (array) request('status')))
+            ->when(request('date_from'), fn($q) => $q->whereDate('created_at', '>=', request('date_from')))
+            ->when(request('date_to'), fn($q) => $q->whereDate('created_at', '<=', request('date_to')))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        if (isAjax()) {
+            return view('applications._results', compact('applications'));
+        }
 
         $stats = [
             'total'      => $job->applications()->count(),
@@ -44,7 +56,9 @@ class ApplicationController extends Controller
             'changed_by' => Auth::id(),
         ]);
 
-        return back()->with('success', __('Applied to :title successfully.', ['title' => $job->title]));
+        return redirect()
+            ->route('jobs.show', $job)
+            ->with('success', __('Applied to “:title” successfully.', ['title' => $job->title]));
     }
 
     public function show(Application $application)
@@ -57,14 +71,18 @@ class ApplicationController extends Controller
 
     public function update(UpdateApplicationRequest $request, Application $application)
     {
-        $application->update(['status' => $request->status]);
+        $status = $request->enum('status', ApplicationStatus::class);
+
+        $application->update(['status' => $status]);
 
         $application->statusLogs()->create([
-            'status'     => $request->status,
+            'status'     => $status,
             'changed_by' => Auth::id(),
         ]);
 
-        return back()->with('success', __('Application status updated.'));
+        return back()->with('success', __('Application marked as :status.', [
+            'status' => $status->label(),
+        ]));
     }
 
     public function resume(Application $application)

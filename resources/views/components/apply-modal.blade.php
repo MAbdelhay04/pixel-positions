@@ -1,6 +1,11 @@
 @props(['job'])
 
-<x-modal name="apply-{{ $job->id }}" :show="$errors->applyJob->isNotEmpty()">
+@php
+    $showApplyModal = (int) session('apply_job_id') === $job->id
+        && $errors->getBag('applyJob')->isNotEmpty();
+@endphp
+
+<x-modal name="apply-{{ $job->id }}" :show="$showApplyModal">
     <form method="POST" action="{{ route('applications.store', $job) }}" enctype="multipart/form-data" class="p-6">
         @csrf
 
@@ -14,11 +19,11 @@
         <div class="mb-5">
             <x-input-label for="resume" value="{{ __('Resume') }}" />
             <x-file-input id="resume" name="resume" accept=".pdf,.docx" />
-            <x-input-error :messages="$errors->applyJob->get('resume')" />
+            <x-input-error :messages="$errors->getBag('applyJob')->get('resume')" />
         </div>
 
         <div class="mb-6">
-            <x-input-label for="cover_letter" value="{{ __('Cover Letter') }}" />
+            <x-input-label for="cover_letter" value="{{ old('cover_letter') ?? __('Cover Letter') }}" />
             <textarea id="cover_letter" name="cover_letter" rows="5"
                 placeholder="{{ __('Tell the employer why you\'re a great fit...') }}"
                 class="block w-full px-3.5 py-2.5 rounded-lg border text-sm transition-all duration-150 focus:outline-none focus:ring-1

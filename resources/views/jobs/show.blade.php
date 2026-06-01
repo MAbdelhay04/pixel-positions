@@ -68,7 +68,12 @@
                         </div>
                         <div>
                             <dt class="font-semibold text-gray-500 dark:text-gray-400">{{ __('Status') }}</dt>
-                            <dd class="mt-1 text-gray-900 dark:text-white">{{ $job->status->label() }}</dd>
+                            <dd class="mt-1">
+                                <span
+                                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset {{ $job->status->color() }}">
+                                    {{ $job->status->label() }}
+                                </span>
+                            </dd>
                         </div>
                         @if ($job->salary_range)
                         <div>
@@ -78,6 +83,8 @@
                         @endif
                     </dl>
                 </div>
+
+                <x-job-status-update :job="$job" />
 
                 {{-- Employer: view applications --}}
                 @auth

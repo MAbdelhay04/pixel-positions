@@ -48,7 +48,8 @@ $activeFilterCount = collect(['type', 'location', 'status'])
 
         <x-text-input type="search" name="q" :value="request('q')"
             placeholder="{{ __('Search job titles, companies…') }}" autocomplete="off"
-            class="min-w-0 flex-1 !border-transparent !bg-transparent !shadow-none !ring-0 focus:!border-transparent focus:!ring-0" />
+            class="min-w-0 flex-1 !border-transparent !bg-transparent !shadow-none !ring-0 focus:!border-transparent focus:!ring-0"
+            data-ajax-search-trigger />
 
         <x-secondary-button type="button" x-on:click="filtersOpen = !filtersOpen" class="shrink-0 gap-2">
             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

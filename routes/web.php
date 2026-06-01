@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Employer only
     Route::middleware('role:' . UserRole::Employer->value)->group(function () {
         Route::resource('jobs', JobListingController::class)->except(['index', 'show']);
+        Route::patch('/jobs/{job}/status', [JobListingController::class,'updateStatus'])->name('jobs.update_status');
         Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');

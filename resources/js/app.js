@@ -1,6 +1,7 @@
 import './dark';
 import './password-toggle';
 import './token-picker';
+import './ajax-search';
 
 import Alpine from 'alpinejs';
 

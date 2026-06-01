@@ -18,6 +18,8 @@
         toggle(val) {
             const idx = this.selected.indexOf(val);
             idx === -1 ? this.selected.push(val) : this.selected.splice(idx, 1);
+            // Notify ajaxSearch mixin (bubbles up through the form)
+            this.$el.dispatchEvent(new CustomEvent('multi-select-change', { bubbles: true }));
         },
         isSelected(val) {
             return this.selected.includes(val);

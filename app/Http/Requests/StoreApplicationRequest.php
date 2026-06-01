@@ -3,11 +3,17 @@
 namespace App\Http\Requests;
 
 use App\Models\Application;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreApplicationRequest extends FormRequest
 {
+    /**
+     * @var string
+     */
+    protected $errorBag = 'applyJob';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,8 +36,10 @@ class StoreApplicationRequest extends FormRequest
         ];
     }
 
-    public function errorBag(): string
+    protected function failedValidation(Validator $validator): void
     {
-        return 'applyJob';
+        session()->flash('apply_job_id', $this->route('job')->id);
+
+        parent::failedValidation($validator);
     }
 }

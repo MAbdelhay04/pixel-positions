@@ -22,6 +22,10 @@ class EmployerDashboard implements DashboardInterface
             ->paginate(9)
             ->withQueryString();
 
+        if (isAjax()) {
+            return view('dashboard._employer_results', compact('jobs'));
+        }
+
         $stats = [
             'total'        => $user->jobs()->count(),
             'open'         => $user->jobs()->where('status', JobStatus::Open)->count(),

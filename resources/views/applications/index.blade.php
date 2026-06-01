@@ -16,8 +16,14 @@
         </div>
     </x-slot>
 
-    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <main
+        class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
+        x-data="ajaxSearch({
+            url: '{{ route('applications.index', $job) }}',
+            resultsSelector: '#applications-results'
+        })">
 
+        {{-- Stats — static, not replaced by AJAX --}}
         <section class="mb-8 grid gap-4 sm:grid-cols-3">
             <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total') }}</p>
@@ -35,27 +41,30 @@
             </div>
         </section>
 
-        @if ($applications->isEmpty())
-        <section
-            class="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-12 text-center shadow-sm dark:border-white/10 dark:bg-white/5">
-            <h3 class="text-xl font-bold text-gray-950 dark:text-white">{{ __('No applications yet') }}</h3>
-            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600 dark:text-gray-400">
-                {{ __('Applications will appear here once candidates start applying.') }}
-            </p>
-        </section>
-        @else
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            @foreach ($applications as $application)
-            <x-application-card-employer :$application />
-            @endforeach
-        </section>
-
-        @if ($applications->hasPages())
-        <div class="mt-8">
-            {{ $applications->links() }}
+        {{-- Search --}}
+        <div class="mb-6">
+            <x-application-index-search :job="$job" />
         </div>
-        @endif
-        @endif
+
+        {{-- Loading spinner --}}
+        <div x-show="loading" x-cloak class="flex items-center justify-center py-12">
+            <svg class="h-6 w-6 animate-spin text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+        </div>
+
+        {{-- Fetch error --}}
+        <div x-show="fetchError && searchAttempted" x-cloak
+            class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400">
+            {{ __('Something went wrong. Please try again or refresh the page.') }}
+        </div>
+
+        {{-- Results (replaced on each AJAX call) --}}
+        <div id="applications-results" x-show="!loading">
+            @include('applications._results')
+        </div>
 
     </main>
 </x-app-layout>
