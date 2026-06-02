@@ -24,6 +24,8 @@
                 <x-dark-mode-toggle :label="false" />
 
                 @auth
+                <x-notification-bell />
+
                 <x-dropdown align="right" width="56">
                     <x-slot name="trigger">
                         <button
@@ -84,6 +86,10 @@
             <div class="-me-2 flex items-center gap-2 sm:hidden">
                 <x-dark-mode-toggle :label="false" />
 
+                @auth
+                <x-notification-bell />
+                @endauth
+
                 <button type="button" @click="open = !open"
                     class="inline-flex cursor-pointer items-center justify-center rounded-lg p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
                     aria-label="Toggle navigation">
@@ -130,6 +136,10 @@
                     <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</p>
                 </div>
             </div>
+
+            <x-responsive-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.*')">
+                {{ __('Notifications') }}
+            </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('profile.edit')">
                 {{ __('Profile') }}

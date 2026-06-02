@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Enums\ApplicationStatus;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
+use App\Mail\ApplicationSubmittedToCandidate;
+use App\Mail\NewApplicationForEmployer;
 use App\Models\Application;
 use App\Models\JobListing;
+use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
@@ -56,6 +60,11 @@ class ApplicationController extends Controller
             'changed_by' => Auth::id(),
         ]);
 
+        $application->load(['candidate', 'job.employer']);
+
+        Mail::to($application->candidate)->queue(new ApplicationSubmittedToCandidate($application));
+        Mail::to($application->job->employer)->queue(new NewApplicationForEmployer($application));
+
         return redirect()
             ->route('jobs.show', $job)
             ->with('success', __('Applied to “:title” successfully.', ['title' => $job->title]));
@@ -79,6 +88,15 @@ class ApplicationController extends Controller
             'status'     => $status,
             'changed_by' => Auth::id(),
         ]);
+
+        $application->loadMissing('job');
+
+        $application->candidate->notify(new ApplicationStatusUpdated(
+            application: $application,
+            jobTitle: $application->job->title,
+            statusLabel: $status->label(),
+            statusValue: $status->value,
+        ));
 
         return back()->with('success', __('Application marked as :status.', [
             'status' => $status->label(),
