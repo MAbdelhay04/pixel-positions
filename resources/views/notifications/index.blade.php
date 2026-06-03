@@ -11,9 +11,10 @@
             </div>
 
             @if (auth()->user()->unreadNotifications()->exists())
-                <x-secondary-button type="button" data-mark-all-read data-mark-all-url="{{ route('notifications.read_all') }}">
-                    {{ __('Mark all as read') }}
-                </x-secondary-button>
+            <x-secondary-button type="button" data-mark-all-read
+                data-mark-all-url="{{ route('notifications.read_all') }}">
+                {{ __('Mark all as read') }}
+            </x-secondary-button>
             @endif
         </div>
     </x-slot>

@@ -74,20 +74,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Skill::class, 'user_skill');
     }
-    public function attachSkills(array $names): void
+    public function syncSkills(array $names): void
     {
-        $ids = collect($names)->map(function ($name) {
-            return Skill::firstOrCreate([
-                'name' => strtolower(trim($name))
-            ])->id;
+        $skills = collect($names)
+            ->map(fn($skill) => strtolower(trim($skill)))
+            ->filter()
+            ->unique();
+
+        $existing = Skill::whereIn('name', $skills)->get()->keyBy('name');
+
+        $ids = $skills->map(function ($name) use ($existing) {
+            return $existing[$name]->id ?? Skill::create(['name' => $name])->id;
         });
 
-        $this->tags()->syncWithoutDetaching($ids);
-    }
-    public function detachSkills(array $names): void
-    {
-        $names = array_map(fn($name) => strtolower(trim($name)), $names);
-        $ids = Skill::whereIn('name', $names)->pluck('id');
-        $this->tags()->detach($ids);
+        $this->skills()->sync($ids);
     }
 }

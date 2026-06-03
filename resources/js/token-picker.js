@@ -10,12 +10,15 @@ function uniquePush(items, value) {
     const clean = normalize(value);
 
     if (!clean) {
-        return;
+        return false;
     }
 
     if (!items.some((item) => item.toLowerCase() === clean.toLowerCase())) {
         items.push(clean);
+        return true;
     }
+
+    return false;
 }
 
 function createChip(label, onRemove) {
@@ -39,23 +42,44 @@ function initTokenPickers() {
 
         picker.dataset.tokenReady = "true";
 
-        const hidden = picker.querySelector("[data-token-hidden]");
+        const hiddenContainer = picker.querySelector(
+            "[data-token-hidden-container]",
+        );
         const input = picker.querySelector("[data-token-input]");
         const chips = picker.querySelector("[data-token-chips]");
         const suggestions = picker.querySelector("[data-token-suggestions]");
+        const maxItems = parseInt(picker.dataset.tokenMax || "0", 10); // 0 = no limit
+        const fieldName = picker.dataset.tokenField; // e.g. "skills[]"
+        const errorEl = picker.querySelector("[data-token-error]");
+
         const options = JSON.parse(picker.dataset.tokenOptions || "[]")
             .map(normalize)
             .filter(Boolean);
+
         let selected = [];
 
-        splitValues(picker.dataset.tokenInitial || "").forEach(function (value) {
-            uniquePush(selected, value);
-        });
+        splitValues(picker.dataset.tokenInitial || "").forEach(
+            function (value) {
+                uniquePush(selected, value);
+            },
+        );
 
+        // ----------------------------------------------------------------
+        // Sync: rebuild hidden inputs (array) + chips
+        // ----------------------------------------------------------------
         function syncSelected() {
-            hidden.value = selected.join(", ");
-            chips.innerHTML = "";
+            // Rebuild hidden inputs as name[] array
+            hiddenContainer.innerHTML = "";
+            selected.forEach(function (value) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = fieldName;
+                input.value = value;
+                hiddenContainer.appendChild(input);
+            });
 
+            // Rebuild chips
+            chips.innerHTML = "";
             selected.forEach(function (value) {
                 chips.appendChild(
                     createChip(value, function () {
@@ -65,15 +89,44 @@ function initTokenPickers() {
                         );
                         syncSelected();
                         renderSuggestions();
+                        showError("");
                         input.focus();
                     }),
                 );
             });
         }
 
+        // ----------------------------------------------------------------
+        // Max limit guard
+        // ----------------------------------------------------------------
+        function isAtMax() {
+            return maxItems > 0 && selected.length >= maxItems;
+        }
+
+        function showError(msg) {
+            if (!errorEl) return;
+            errorEl.textContent = msg;
+            errorEl.classList.toggle("hidden", !msg);
+        }
+
+        function tryAdd(value) {
+            if (isAtMax()) {
+                showError(`Maximum ${maxItems} items allowed.`);
+                return false;
+            }
+            return uniquePush(selected, value);
+        }
+
+        // ----------------------------------------------------------------
+        // Suggestions
+        // ----------------------------------------------------------------
         function renderSuggestions() {
             const query = normalize(input.value).toLowerCase();
             suggestions.innerHTML = "";
+
+            if (isAtMax()) {
+                return; // hide suggestions when limit reached
+            }
 
             const matches = options
                 .filter(
@@ -96,24 +149,28 @@ function initTokenPickers() {
                     "inline-flex cursor-pointer items-center rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-600 transition-colors duration-150 hover:border-blue-300 hover:text-blue-700 dark:border-white/10 dark:bg-black dark:text-gray-300 dark:hover:border-blue-700 dark:hover:text-blue-300";
                 button.textContent = option;
                 button.addEventListener("click", function () {
-                    uniquePush(selected, option);
-                    syncSelected();
-                    renderSuggestions();
-                    input.focus();
+                    if (tryAdd(option)) {
+                        syncSelected();
+                        renderSuggestions();
+                        input.focus();
+                    }
                 });
 
                 suggestions.appendChild(button);
             });
         }
 
-        input.addEventListener("input", renderSuggestions);
+        input.addEventListener("input", function () {
+            showError("");
+            renderSuggestions();
+        });
 
         input.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" || event.key === ",") {
                 event.preventDefault();
 
                 splitValues(input.value).forEach(function (value) {
-                    uniquePush(selected, value);
+                    tryAdd(value);
                 });
 
                 input.value = "";
@@ -129,6 +186,7 @@ function initTokenPickers() {
                 selected.pop();
                 syncSelected();
                 renderSuggestions();
+                showError("");
             }
         });
 

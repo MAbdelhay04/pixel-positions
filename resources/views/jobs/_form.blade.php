@@ -22,8 +22,16 @@ $statusOptions = collect(\App\Enums\JobStatus::cases())->map(fn ($status) => [
 $selectedLocation = $job?->location?->value ?? \App\Enums\JobLocation::Remote->value;
 $selectedType = $job?->type?->value ?? \App\Enums\JobType::FullTime->value;
 $selectedStatus = $job?->status?->value ?? \App\Enums\JobStatus::Draft->value;
-$selectedSkills = $job ? $job->skills->pluck('name')->implode(', ') : '';
-$selectedTags = $job ? $job->tags->pluck('name')->implode(', ') : '';
+
+$oldSkills = old('skills');
+$selectedSkills = $oldSkills
+? (is_array($oldSkills) ? implode(', ', $oldSkills) : $oldSkills)
+: ($job ? $job->skills->pluck('name')->implode(', ') : '');
+
+$oldTags = old('tags');
+$selectedTags = $oldTags
+? (is_array($oldTags) ? implode(', ', $oldTags) : $oldTags)
+: ($job ? $job->tags->pluck('name')->implode(', ') : '');
 
 @endphp
 
@@ -96,10 +104,10 @@ $selectedTags = $job ? $job->tags->pluck('name')->implode(', ') : '';
 
     <section class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
         <div class="grid gap-5 md:grid-cols-2">
-            <div data-token-picker data-token-options='@json($skills)'
-                data-token-initial="{{ old('skills', $selectedSkills) }}">
+
+            <div data-token-picker data-token-options='@json($skills)' data-token-initial="{{ $selectedSkills }}"
+                data-token-field="skills[]" data-token-max="10">
                 <x-input-label for="skills_search" :value="__('Skills')" />
-                <input type="hidden" name="skills" data-token-hidden>
 
                 <div
                     class="rounded-lg border border-gray-300 bg-white p-2 transition-colors duration-150 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 dark:border-white/10 dark:bg-black dark:focus-within:border-blue-700 dark:focus-within:ring-blue-700">
@@ -110,18 +118,24 @@ $selectedTags = $job ? $job->tags->pluck('name')->implode(', ') : '';
                         class="w-full border-0 bg-transparent px-1 py-1 text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-0 dark:text-white dark:placeholder-gray-600">
                 </div>
 
+                <div data-token-hidden-container></div>
+
                 <div data-token-suggestions class="mt-3 flex flex-wrap gap-2"></div>
 
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Choose existing skills or type new ones. Press comma or Enter to add more than one.
                 </p>
+
+                <p data-token-error class="mt-1 hidden text-xs text-red-500 dark:text-red-400"></p>
+
                 <x-input-error :messages="$errors->get('skills')" />
+                <x-input-error :messages="collect($errors->get('skills.*'))->flatten()->unique()->values()->all()" />
+
             </div>
 
-            <div data-token-picker data-token-options='@json($tags)'
-                data-token-initial="{{ old('tags', $selectedTags) }}">
+            <div data-token-picker data-token-options='@json($tags)' data-token-initial="{{ $selectedTags }}"
+                data-token-field="tags[]" data-token-max="5">
                 <x-input-label for="tags_search" :value="__('Tags')" />
-                <input type="hidden" name="tags" data-token-hidden>
 
                 <div
                     class="rounded-lg border border-gray-300 bg-white p-2 transition-colors duration-150 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 dark:border-white/10 dark:bg-black dark:focus-within:border-blue-700 dark:focus-within:ring-blue-700">
@@ -132,13 +146,20 @@ $selectedTags = $job ? $job->tags->pluck('name')->implode(', ') : '';
                         class="w-full border-0 bg-transparent px-1 py-1 text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-0 dark:text-white dark:placeholder-gray-600">
                 </div>
 
+                <div data-token-hidden-container></div>
+
                 <div data-token-suggestions class="mt-3 flex flex-wrap gap-2"></div>
 
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Choose existing tags or type new ones. Press comma or Enter to add more than one.
                 </p>
+
+                <p data-token-error class="mt-1 hidden text-xs text-red-500 dark:text-red-400"></p>
+
                 <x-input-error :messages="$errors->get('tags')" />
+                <x-input-error :messages="collect($errors->get('tags.*'))->flatten()->unique()->values()->all()" />
             </div>
+
         </div>
     </section>
 

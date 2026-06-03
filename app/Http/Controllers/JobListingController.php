@@ -68,16 +68,16 @@ class JobListingController extends Controller
 
     public function store(StoreJobListingRequest $request)
     {
-        $jobData = $request->validated();
+        $jobData = $request->validatedJobData();
 
         $job = Auth::user()->jobs()->create($jobData);
 
-        if ($request->input('skills')) {
-            $job->syncSkills(explode(',', $request->input('skills')));
+        if ($request->validated('skills')) {
+            $job->syncSkills($request->validated('skills'));
         }
 
-        if ($request->input('tags')) {
-            $job->syncTags(explode(',', $request->input('tags')));
+        if ($request->validated('tags')) {
+            $job->syncTags($request->validated('tags'));
         }
 
         return redirect()
@@ -98,12 +98,12 @@ class JobListingController extends Controller
 
     public function update(UpdateJobListingRequest $request, JobListing $job)
     {
-        $jobData = $request->validated();
+        $jobData = $request->validatedJobData();
 
         $job->update($jobData);
 
-        $job->syncTags($request->input('tags') ? explode(',', $request->input('tags')) : []);
-        $job->syncSkills($request->input('skills') ? explode(',', $request->input('skills')) : []);
+        $job->syncTags($request->validated('tags') ? $request->validated('tags') : []);
+        $job->syncSkills($request->validated('skills') ? $request->validated('skills') : []);
 
         return redirect()
             ->route('jobs.show', $job)

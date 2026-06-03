@@ -27,7 +27,8 @@
                 <div
                     style="padding:14px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:18px;">
                     <p style="margin:0 0 8px 0;">{{ __('Job: :job', ['job' => $application->job->title]) }}</p>
-                    <p style="margin:0 0 8px 0;">{{ __('Company: :company', ['company' => $application->job->employer->name]) }}
+                    <p style="margin:0 0 8px 0;">{{ __('Company: :company', ['company' =>
+                        $application->job->employer->name]) }}
                     </p>
                     <p style="margin:0;">
                         {{ __('Status:') }}
