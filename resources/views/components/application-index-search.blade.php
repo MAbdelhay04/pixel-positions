@@ -25,37 +25,41 @@ $activeFilterCount = collect(['status', 'date_from', 'date_to'])
     x-data="{ filtersOpen: {{ $hasFilters ? 'true' : 'false' }} }">
 
     {{-- Search bar row --}}
-    <div class="flex items-center gap-3 px-5 py-3.5">
+    <div class="flex flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-3 sm:px-5">
 
-        <svg class="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-        </svg>
-
-        <x-text-input
-            type="search" name="q" :value="request('q')"
-            placeholder="{{ __('Search by applicant name…') }}"
-            autocomplete="off"
-            class="min-w-0 flex-1 !border-transparent !bg-transparent !shadow-none !ring-0 focus:!border-transparent focus:!ring-0" />
-
-        <x-secondary-button type="button" x-on:click="filtersOpen = !filtersOpen" class="shrink-0 gap-2">
-            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex min-w-0 flex-1 items-center gap-3">
+            <svg class="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 4h18M7 8h10M11 12h2M9 16h6" />
+                    d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
             </svg>
-            {{ __('Filters') }}
-            @if($activeFilterCount > 0)
-            <span
-                class="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white dark:bg-blue-500">
-                {{ $activeFilterCount }}
-            </span>
-            @endif
-        </x-secondary-button>
 
-        <x-primary-button type="submit">
-            {{ __('Search') }}
-        </x-primary-button>
+            <x-text-input
+                type="search" name="q" :value="request('q')"
+                placeholder="{{ __('Search by applicant name…') }}"
+                autocomplete="off"
+                class="min-w-0 flex-1 !border-transparent !bg-transparent !shadow-none !ring-0 focus:!border-transparent focus:!ring-0" />
+        </div>
+
+        <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+            <x-secondary-button type="button" x-on:click="filtersOpen = !filtersOpen" class="min-w-0 flex-1 gap-2 sm:flex-initial">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 4h18M7 8h10M11 12h2M9 16h6" />
+                </svg>
+                {{ __('Filters') }}
+                @if($activeFilterCount > 0)
+                <span
+                    class="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white dark:bg-blue-500">
+                    {{ $activeFilterCount }}
+                </span>
+                @endif
+            </x-secondary-button>
+
+            <x-primary-button type="submit" class="min-w-0 flex-1 sm:flex-initial">
+                {{ __('Search') }}
+            </x-primary-button>
+        </div>
     </div>
 
     {{-- Filter panel --}}

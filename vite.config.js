@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
+const vitePort = Number(process.env.VITE_PORT ?? 5173);
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -10,4 +12,15 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: vitePort,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
+            usePolling: true,
+        },
+    },
 });
