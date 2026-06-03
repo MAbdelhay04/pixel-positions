@@ -32,9 +32,9 @@ class UserFactory extends Factory
             'role' => fake()->randomElement(
                 array_map(fn($case) => $case->value, UserRole::cases())
             ),
-            'logo' => 'https://picsum.photos/100',
+            'logo' => '/logos/' . Str::random(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= 'password',
             'remember_token' => Str::random(10),
         ];
     }

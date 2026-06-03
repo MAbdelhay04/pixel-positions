@@ -1,5 +1,9 @@
 <?php
 
+use App\Enums\UserRole;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 
@@ -7,9 +11,14 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
+    Storage::fake('public');
+
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
+        'username' => 'example_user',
+        'logo' => UploadedFile::fake()->image('logo.png'),
+        'role' => UserRole::Candidate->value,
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);

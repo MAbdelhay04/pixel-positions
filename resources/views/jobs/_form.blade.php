@@ -1,27 +1,33 @@
 @php
+use App\Models\Category;
+use App\Models\Skill;
+use App\Models\Tag;
+use App\Enums\JobLocation;
+use App\Enums\JobType;
+use App\Enums\JobStatus;
 $job = $job ?? null;
-$categories = \App\Models\Category::orderBy('name')->get();
-$skills = \App\Models\Skill::orderBy('name')->pluck('name');
-$tags = \App\Models\Tag::orderBy('name')->pluck('name');
+$categories = Category::orderBy('name')->get();
+$skills = Skill::orderBy('name')->pluck('name');
+$tags = Tag::orderBy('name')->pluck('name');
 
-$locationOptions = collect(\App\Enums\JobLocation::cases())->map(fn ($location) => [
+$locationOptions = collect(JobLocation::cases())->map(fn ($location) => [
 'value' => $location->value,
 'label' => $location->label(),
 ])->all();
 
-$typeOptions = collect(\App\Enums\JobType::cases())->map(fn ($type) => [
+$typeOptions = collect(JobType::cases())->map(fn ($type) => [
 'value' => $type->value,
 'label' => $type->label(),
 ])->all();
 
-$statusOptions = collect(\App\Enums\JobStatus::cases())->map(fn ($status) => [
+$statusOptions = collect(JobStatus::cases())->map(fn ($status) => [
 'value' => $status->value,
 'label' => $status->label(),
 ])->all();
 
-$selectedLocation = $job?->location?->value ?? \App\Enums\JobLocation::Remote->value;
-$selectedType = $job?->type?->value ?? \App\Enums\JobType::FullTime->value;
-$selectedStatus = $job?->status?->value ?? \App\Enums\JobStatus::Draft->value;
+$selectedLocation = $job?->location?->value ?? JobLocation::OnSite->value;
+$selectedType = $job?->type?->value ?? JobType::FullTime->value;
+$selectedStatus = $job?->status?->value ?? JobStatus::Draft->value;
 
 $oldSkills = old('skills');
 $selectedSkills = $oldSkills

@@ -22,7 +22,7 @@
             <div class="flex items-center justify-between mb-1.5">
                 <x-input-label for="password" :value="__('Password')" class="mb-0" />
                 @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}"
+                <a href="{{ route('password.request') }}" tabindex="-1"
                     class="text-xs text-gray-500 underline underline-offset-2 transition-colors duration-150 hover:text-gray-700 dark:hover:text-gray-300">
                     {{ __('Forgot password?') }}
                 </a>
