@@ -9,7 +9,7 @@ class UpdateProfileSkillsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isCandidate();
     }
 
     public function rules(): array

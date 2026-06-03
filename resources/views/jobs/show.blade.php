@@ -133,6 +133,12 @@
                 </a>
                 @endif
 
+                @auth
+                @if(Auth::user()->isCandidate())
+                <x-job-skill-match :job="$job" />
+                @endif
+                @endauth
+
             </aside>
         </div>
     </main>

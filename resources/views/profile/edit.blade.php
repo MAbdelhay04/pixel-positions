@@ -32,11 +32,13 @@
             </div>
 
             {{-- Skills --}}
+            @if (Auth::user()->isCandidate())
             <div class="px-6 py-8 rounded-xl border transition-colors duration-300
                 bg-white border-gray-200 shadow-sm
                 dark:bg-white/5 dark:border-white/10">
                 @include('profile.partials.update-skills-form')
             </div>
+            @endif
 
             {{-- Password --}}
             <div class="px-6 py-8 rounded-xl border transition-colors duration-300

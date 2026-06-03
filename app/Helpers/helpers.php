@@ -1,5 +1,8 @@
 <?php
 
+use App\Support\Notifications\NotificationViewResolver;
+use Illuminate\Notifications\DatabaseNotification;
+
 if (! function_exists('searchLike')) {
     function searchLike(mixed $value)
     {
@@ -15,15 +18,29 @@ if (! function_exists('isAjax')) {
 }
 
 if (! function_exists('notification_type_view')) {
-    function notification_type_view(\Illuminate\Notifications\DatabaseNotification|string $notification): string
+    function notification_type_view(DatabaseNotification|string $notification): string
     {
-        return \App\Support\Notifications\NotificationViewResolver::viewFor($notification);
+        return NotificationViewResolver::viewFor($notification);
     }
 }
 
 if (! function_exists('notification_redirect_url')) {
-    function notification_redirect_url(\Illuminate\Notifications\DatabaseNotification $notification): string
+    function notification_redirect_url(DatabaseNotification $notification): string
     {
-        return \App\Support\Notifications\NotificationViewResolver::redirectUrl($notification);
+        return NotificationViewResolver::redirectUrl($notification);
+    }
+}
+
+if (! function_exists('skillsMatchScore')) {
+    function skillsMatchScore(array $userSkills, array $jobSkills): float
+    {
+        if (count($jobSkills) === 0) {
+            return 0.0;
+        }
+
+        $matchedSkills = array_intersect($userSkills, $jobSkills);
+        $score = (count($matchedSkills) / count($jobSkills)) * 100;
+
+        return round($score, 2);
     }
 }
