@@ -36,17 +36,22 @@ class UpdateJobListingRequest extends FormRequest
             'type'  => ['required', new Enum(JobType::class)],
             'status'  => ['required', new Enum(JobStatus::class)],
             'skills' => ['nullable', 'array', 'max:10'],
-            'skills.*' => ['string', 'min:2'],
+            'skills.*' => ['string', 'min:2', 'max:30'],
             'tags' => ['nullable', 'array', 'max:5'],
-            'tags.*' => ['string', 'min:2'],
+            'tags.*' => ['string', 'min:2', 'max:30'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'skills.*' => 'Each skill must be at least 3 characters.',
-            'tags.*'   => 'Each tag must be at least 3 characters.',
+            'skills.*.min' => 'Each skill must be at least 2 characters.',
+            'skills.*.max' => 'Each skill must not exceed 30 characters.',
+            'skills.*.string' => 'Each skill must be a valid string.',
+
+            'tags.*.min' => 'Each tag must be at least 2 characters.',
+            'tags.*.max' => 'Each tag must not exceed 30 characters.',
+            'tags.*.string' => 'Each tag must be a valid string.',
         ];
     }
 

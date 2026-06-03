@@ -72,13 +72,8 @@ class JobListingController extends Controller
 
         $job = Auth::user()->jobs()->create($jobData);
 
-        if ($request->validated('skills')) {
-            $job->syncSkills($request->validated('skills'));
-        }
-
-        if ($request->validated('tags')) {
-            $job->syncTags($request->validated('tags'));
-        }
+        $job->syncTags($request->validated('tags', []));
+        $job->syncSkills($request->validated('skills', []));
 
         return redirect()
             ->route('jobs.show', $job)
@@ -102,8 +97,8 @@ class JobListingController extends Controller
 
         $job->update($jobData);
 
-        $job->syncTags($request->validated('tags') ? $request->validated('tags') : []);
-        $job->syncSkills($request->validated('skills') ? $request->validated('skills') : []);
+        $job->syncTags($request->validated('tags', []));
+        $job->syncSkills($request->validated('skills', []));
 
         return redirect()
             ->route('jobs.show', $job)

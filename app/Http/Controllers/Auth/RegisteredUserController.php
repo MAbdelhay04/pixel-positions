@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Models\User;
+use App\Services\ImageOptimizationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -26,11 +27,11 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(RegisterUserRequest $request): RedirectResponse
+    public function store(RegisterUserRequest $request, ImageOptimizationService $imageOptimizationService): RedirectResponse
     {
         $data = $request->validated();
 
-        $data['logo'] = $request->file('logo')->store('logos', 'public');
+        $data['logo'] = $imageOptimizationService->store($request->file('logo'), width: 300);
 
         $user = User::create($data);
 

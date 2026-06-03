@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Employer only
     Route::middleware('role:' . UserRole::Employer->value)->group(function () {
         Route::resource('jobs', JobListingController::class)->except(['index', 'show']);
-        Route::patch('/jobs/{job}/status', [JobListingController::class,'updateStatus'])->name('jobs.update_status');
+        Route::patch('/jobs/{job}/status', [JobListingController::class, 'updateStatus'])->name('jobs.update_status');
         Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
@@ -47,6 +47,8 @@ Route::get('/jobs/{job}', [JobListingController::class, 'show'])->name('jobs.sho
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/logo', [ProfileController::class, 'updateLogo'])->name('profile.logo');
+    Route::patch('/profile/skills', [ProfileController::class, 'updateSkills'])->name('profile.skills');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
