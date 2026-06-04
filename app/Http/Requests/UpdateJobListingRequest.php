@@ -31,7 +31,7 @@ class UpdateJobListingRequest extends FormRequest
             'url' => ['nullable', 'url'],
             'salary_range' => ['required', 'string', 'max:25'],
             'category_id' => ['required', 'numeric', 'exists:categories,id'],
-            'description' => ['nullable', 'max:500'],
+            'description' => ['nullable', 'max:5000'],
             'location' => ['required', new Enum(JobLocation::class)],
             'type' => ['required', new Enum(JobType::class)],
             'status' => ['required', new Enum(JobStatus::class)],

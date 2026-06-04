@@ -23,7 +23,7 @@ class ApplicationFactory extends Factory
         return [
             'job_id' => JobListing::factory(),
             'candidate_id' => User::factory()->state(['role' => 'candidate']),
-            'resume' => 'resumes/'.fake()->uuid().'.pdf',
+            'resume' => 'resumes/' . fake()->uuid() . '.pdf',
             'cover_letter' => fake()->optional()->paragraph(),
             'status' => ApplicationStatus::Submitted,
         ];
@@ -31,14 +31,14 @@ class ApplicationFactory extends Factory
 
     public function forJob(JobListing $job): static
     {
-        return $this->state(fn () => [
+        return $this->state(fn() => [
             'job_id' => $job->id,
         ]);
     }
 
     public function forCandidate(User $candidate): static
     {
-        return $this->state(fn () => [
+        return $this->state(fn() => [
             'candidate_id' => $candidate->id,
         ]);
     }

@@ -29,7 +29,19 @@ Pixel Positions also includes public profile pages, AJAX-powered search across k
 
 ### Screenshots
 
-> Add screenshots here
+![Jobs index](public/screenshots/jobs-index.png)
+
+![Job details](public/screenshots/job-details.png)
+
+![Employer dashboard](public/screenshots/employer-dashboard.png)
+
+![Applications management](public/screenshots/applications.png)
+
+![Candidate dashboard](public/screenshots/candidate-dashboard.png)
+
+![Company profile](public/screenshots/company-profile.png)
+
+![Dark mode](public/screenshots/dark-mode.png)
 
 ## Features
 

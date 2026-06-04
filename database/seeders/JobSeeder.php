@@ -13,9 +13,9 @@ class JobSeeder extends Seeder
      */
     public function run(): void
     {
-        // $user = User::first();
+        $user = User::where('email','jobs@pixel-positions.com')->first();
         JobListing::factory()
             ->count(50)
-            ->create();
+            ->create(['employer_id' => $user->id]);
     }
 }
