@@ -23,7 +23,7 @@ class ApplicationFactory extends Factory
         return [
             'job_id' => JobListing::factory(),
             'candidate_id' => User::factory()->state(['role' => 'candidate']),
-            'resume' => 'resumes/' . fake()->uuid() . '.pdf',
+            'resume' => 'resumes/'.fake()->uuid().'.pdf',
             'cover_letter' => fake()->optional()->paragraph(),
             'status' => ApplicationStatus::Submitted,
         ];

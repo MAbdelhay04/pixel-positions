@@ -16,6 +16,7 @@ class Category extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     /**
      * Get the attributes that should be cast.
      *
@@ -27,6 +28,7 @@ class Category extends Model
             'name' => Lowercase::class,
         ];
     }
+
     public function jobs(): HasMany
     {
         return $this->hasMany(JobListing::class);

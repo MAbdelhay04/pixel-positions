@@ -3,10 +3,8 @@
 namespace App\Policies;
 
 use App\Enums\JobStatus;
-use App\Enums\UserRole;
 use App\Models\JobListing;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class JobListingPolicy
 {
@@ -38,7 +36,7 @@ class JobListingPolicy
     {
         return $user->isCandidate()
             && $jobListing->status === JobStatus::Open
-            && !$jobListing->applications()->where('candidate_id', $user->id)->exists();
+            && ! $jobListing->applications()->where('candidate_id', $user->id)->exists();
     }
 
     public function viewApplications(User $user, JobListing $jobListing)

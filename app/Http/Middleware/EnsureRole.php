@@ -19,6 +19,7 @@ class EnsureRole
         if (Auth::user()->role->value !== $role) {
             abort(403);
         }
+
         return $next($request);
     }
 }

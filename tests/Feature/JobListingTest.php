@@ -97,7 +97,7 @@ describe('job listing store requests', function () {
             'category_id' => $category->id,
             'description' => Str::random('200'),
             'location' => JobLocation::Hybrid->value,
-            'type'  => JobType::Contract->value,
+            'type' => JobType::Contract->value,
             'status' => JobStatus::Draft->value,
             'skills' => ['php', 'laravel', 'testing'],
             'tags' => ['new', 'trending', 'software'],
@@ -223,7 +223,7 @@ describe('job listing update requests', function () {
             'category_id' => $category->id,
             'description' => Str::random('200'),
             'location' => JobLocation::Hybrid->value,
-            'type'  => JobType::Contract->value,
+            'type' => JobType::Contract->value,
             'status' => JobStatus::Draft->value,
             'skills' => ['php', 'laravel', 'testing'],
             'tags' => ['new', 'trending', 'software'],
@@ -296,7 +296,7 @@ describe('job listing status update requests', function () {
         $user = User::factory()->create(['role' => 'employer']);
         $job = JobListing::factory()->create([
             'employer_id' => $user->id,
-            'status' => JobStatus::Draft->value
+            'status' => JobStatus::Draft->value,
         ]);
 
         $response = $this->actingAs($user)->patch(route('jobs.update_status', $job), [

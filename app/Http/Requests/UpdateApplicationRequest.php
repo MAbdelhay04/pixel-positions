@@ -31,10 +31,10 @@ class UpdateApplicationRequest extends FormRequest
                 'in:reviewing,interview,hired,rejected',
                 function ($attribute, $value, $fail) use ($application) {
                     $next = ApplicationStatus::from($value);
-                    if (!$application->status->canTransitionTo($next)) {
+                    if (! $application->status->canTransitionTo($next)) {
                         $fail(__('Invalid status transition.'));
                     }
-                }
+                },
             ],
         ];
     }

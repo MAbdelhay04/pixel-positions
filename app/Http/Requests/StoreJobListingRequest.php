@@ -34,7 +34,7 @@ class StoreJobListingRequest extends FormRequest
             'category_id' => ['required', 'numeric', 'exists:categories,id'],
             'description' => ['nullable', 'max:500'],
             'location' => ['required', new Enum(JobLocation::class)],
-            'type'  => ['required', new Enum(JobType::class)],
+            'type' => ['required', new Enum(JobType::class)],
             'status' => ['required', new Enum(JobStatus::class)],
             'skills' => ['nullable', 'array', 'max:10'],
             'skills.*' => ['string', 'min:2', 'max:30'],

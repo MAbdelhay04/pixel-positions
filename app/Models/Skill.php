@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Skill extends Model
 {
     public $timestamps = false;
+
     /**
      * Get the attributes that should be cast.
      *
@@ -22,6 +23,7 @@ class Skill extends Model
             'name' => Lowercase::class,
         ];
     }
+
     public function jobs(): BelongsToMany
     {
         return $this->belongsToMany(JobListing::class, 'job_skill');

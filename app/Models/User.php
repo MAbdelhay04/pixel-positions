@@ -22,7 +22,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, HasUuids, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -36,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'username' => Lowercase::class,
             'profile_data' => 'array',
-            'role'  => UserRole::class
+            'role' => UserRole::class,
         ];
     }
 
@@ -54,11 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === UserRole::Employer;
     }
+
     public function isCandidate()
     {
         return $this->role === UserRole::Candidate;
     }
-
 
     public function applications(): HasMany
     {
@@ -74,10 +74,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Skill::class, 'user_skill');
     }
+
     public function syncSkills(array $names): void
     {
         $skills = collect($names)
-            ->map(fn($skill) => strtolower(trim($skill)))
+            ->map(fn ($skill) => strtolower(trim($skill)))
             ->filter()
             ->unique();
 

@@ -48,8 +48,8 @@ class ImageOptimizationService
 
         $formatEnum = match ($format) {
             'webp' => Format::WEBP,
-            'png'  => Format::PNG,
-            'gif'  => Format::GIF,
+            'png' => Format::PNG,
+            'gif' => Format::GIF,
             default => Format::JPEG,
         };
 
@@ -69,7 +69,7 @@ class ImageOptimizationService
     private function isSvg(UploadedFile $file): bool
     {
         return in_array($file->getMimeType(), [
-            'image/svg+xml'
+            'image/svg+xml',
         ], true);
     }
 }

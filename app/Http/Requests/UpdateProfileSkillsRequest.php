@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProfileSkillsRequest extends FormRequest
@@ -15,7 +14,7 @@ class UpdateProfileSkillsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'skills'   => ['nullable', 'array', 'max:15'],
+            'skills' => ['nullable', 'array', 'max:15'],
             'skills.*' => ['string', 'min:2', 'max:30'],
         ];
     }

@@ -23,15 +23,15 @@ class JobListingService
             ->withCount('applications')
             ->when(
                 Auth::check() && Auth::user()->isCandidate(),
-                fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
+                fn ($q) => $q->with(['applications' => fn ($q) => $q->where('candidate_id', Auth::id())])
             )
-            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
-            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
-            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
+            ->when(request('q'), fn ($q, $v) => $q->where('title', 'like', searchLike($v)))
+            ->when(request('type'), fn ($q, $v) => $q->whereIn('type', (array) $v))
+            ->when(request('location'), fn ($q, $v) => $q->whereIn('location', (array) $v))
             ->when(
                 $useStatusFilter,
-                fn($q) => $q->when(request('status'), fn($q, $v) => $q->whereIn('status', (array) $v)),
-                fn($q) => $q->where('status', JobStatus::Open)
+                fn ($q) => $q->when(request('status'), fn ($q, $v) => $q->whereIn('status', (array) $v)),
+                fn ($q) => $q->where('status', JobStatus::Open)
             )
             ->latest();
     }
@@ -41,7 +41,7 @@ class JobListingService
         return $query->paginate($perPage)->withQueryString();
     }
 
-    public function all(int $perPage = 12,  bool $useStatusFilter = false)
+    public function all(int $perPage = 12, bool $useStatusFilter = false)
     {
         return $this->paginate(
             $this->baseQuery(JobListing::query(), $useStatusFilter),
@@ -57,7 +57,7 @@ class JobListingService
         );
     }
 
-    public function byEmployer(User $employer, int $perPage = 12,  bool $useStatusFilter = false)
+    public function byEmployer(User $employer, int $perPage = 12, bool $useStatusFilter = false)
     {
         return $this->paginate(
             $this->baseQuery($employer->jobs(), $useStatusFilter),

@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /*
@@ -49,19 +51,19 @@ function something()
     // ..
 }
 
-function fakeStorage(string $diskName): \Illuminate\Filesystem\FilesystemAdapter
+function fakeStorage(string $diskName): FilesystemAdapter
 {
     $config = config("filesystems.disks.{$diskName}");
-    $config['root'] = storage_path("framework/testing/disks/{$diskName}-" . str()->uuid());
+    $config['root'] = storage_path("framework/testing/disks/{$diskName}-".str()->uuid());
 
-    $disk = \Illuminate\Support\Facades\Storage::createLocalDriver($config);
+    $disk = Storage::createLocalDriver($config);
 
-    \Illuminate\Support\Facades\Storage::set($diskName, $disk);
+    Storage::set($diskName, $disk);
 
     return $disk;
 }
 
-function fakePublicStorage(): \Illuminate\Filesystem\FilesystemAdapter
+function fakePublicStorage(): FilesystemAdapter
 {
     return fakeStorage('public');
 }

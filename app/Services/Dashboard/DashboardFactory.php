@@ -15,7 +15,7 @@ class DashboardFactory
     {
         return match ($user->role) {
             UserRole::Employer => new EmployerDashboard(App::make(JobListingService::class)),
-            UserRole::Candidate => new CandidateDashboard(),
+            UserRole::Candidate => new CandidateDashboard,
         };
     }
 }

@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['title', 'url', 'salary_range', 'category_id', 'description', 'location', 'type', 'status'])]
 class JobListing extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
+
     public function getRouteKeyName()
     {
         return 'uuid';
@@ -35,9 +36,9 @@ class JobListing extends Model
     protected function casts(): array
     {
         return [
-            'location'  => JobLocation::class,
-            'type'  => JobType::class,
-            'status'  => JobStatus::class,
+            'location' => JobLocation::class,
+            'type' => JobType::class,
+            'status' => JobStatus::class,
         ];
     }
 
@@ -51,6 +52,7 @@ class JobListing extends Model
         if ($this->relationLoaded('applications')) {
             return $this->applications->where('candidate_id', $user->id)->isNotEmpty();
         }
+
         return $this->applications()->where('candidate_id', $user->id)->exists();
     }
 
@@ -68,10 +70,11 @@ class JobListing extends Model
     {
         return $this->belongsToMany(Tag::class, 'job_tag', 'job_id', 'tag_id');
     }
+
     public function syncTags(array $names): void
     {
         $tags = collect($names)
-            ->map(fn($tag) => strtolower(trim($tag)))
+            ->map(fn ($tag) => strtolower(trim($tag)))
             ->filter()
             ->unique();
 
@@ -88,10 +91,11 @@ class JobListing extends Model
     {
         return $this->belongsToMany(Skill::class, 'job_skill', 'job_id', 'skill_id');
     }
+
     public function syncSkills(array $names): void
     {
         $skills = collect($names)
-            ->map(fn($skill) => strtolower(trim($skill)))
+            ->map(fn ($skill) => strtolower(trim($skill)))
             ->filter()
             ->unique();
 

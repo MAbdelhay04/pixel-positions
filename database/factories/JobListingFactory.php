@@ -40,15 +40,15 @@ class JobListingFactory extends Factory
             'description' => fake()->text(300),
 
             'location' => fake()->randomElement(
-                array_map(fn($case) => $case->value, JobLocation::cases())
+                array_map(fn ($case) => $case->value, JobLocation::cases())
             ),
 
             'type' => fake()->randomElement(
-                array_map(fn($case) => $case->value, JobType::cases())
+                array_map(fn ($case) => $case->value, JobType::cases())
             ),
 
             'status' => fake()->randomElement(
-                array_map(fn($case) => $case->value, JobStatus::cases())
+                array_map(fn ($case) => $case->value, JobStatus::cases())
             ),
 
             // default employer (can be overridden in seeder)
@@ -61,7 +61,7 @@ class JobListingFactory extends Factory
      */
     public function forEmployer(User $user): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'employer_id' => $user->id,
         ]);
     }

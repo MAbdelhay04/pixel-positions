@@ -24,10 +24,10 @@ class ApplicationController extends Controller
 
         $applications = $job->applications()
             ->with('candidate')
-            ->when(request('q'), fn($q, $v) => $q->whereHas('candidate', fn($q) => $q->where('name', 'like', searchLike($v))))
-            ->when(request('status'), fn($q) => $q->whereIn('status', (array) request('status')))
-            ->when(request('date_from'), fn($q) => $q->whereDate('created_at', '>=', request('date_from')))
-            ->when(request('date_to'), fn($q) => $q->whereDate('created_at', '<=', request('date_to')))
+            ->when(request('q'), fn ($q, $v) => $q->whereHas('candidate', fn ($q) => $q->where('name', 'like', searchLike($v))))
+            ->when(request('status'), fn ($q) => $q->whereIn('status', (array) request('status')))
+            ->when(request('date_from'), fn ($q) => $q->whereDate('created_at', '>=', request('date_from')))
+            ->when(request('date_to'), fn ($q) => $q->whereDate('created_at', '<=', request('date_to')))
             ->latest()
             ->paginate(12)
             ->withQueryString();
@@ -37,8 +37,8 @@ class ApplicationController extends Controller
         }
 
         $stats = [
-            'total'      => $job->applications()->count(),
-            'reviewing'  => $job->applications()->where('status', ApplicationStatus::Reviewing)->count(),
+            'total' => $job->applications()->count(),
+            'reviewing' => $job->applications()->where('status', ApplicationStatus::Reviewing)->count(),
             'interviews' => $job->applications()->where('status', ApplicationStatus::Interview)->count(),
         ];
 
@@ -51,12 +51,12 @@ class ApplicationController extends Controller
 
         $application = $job->applications()->create([
             'candidate_id' => Auth::id(),
-            'resume'       => $resume,
+            'resume' => $resume,
             'cover_letter' => $request->input('cover_letter'),
         ]);
 
         $application->statusLogs()->create([
-            'status'     => ApplicationStatus::Submitted,
+            'status' => ApplicationStatus::Submitted,
             'changed_by' => Auth::id(),
         ]);
 
@@ -85,7 +85,7 @@ class ApplicationController extends Controller
         $application->update(['status' => $status]);
 
         $application->statusLogs()->create([
-            'status'     => $status,
+            'status' => $status,
             'changed_by' => Auth::id(),
         ]);
 
@@ -108,10 +108,11 @@ class ApplicationController extends Controller
         Gate::authorize('view', $application);
 
         $extension = pathinfo($application->resume, PATHINFO_EXTENSION);
-        $filename  = $application->candidate->name . '_resume.' . $extension;
+        $filename = $application->candidate->name.'_resume.'.$extension;
 
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('local');
+
         return $disk->download($application->resume, $filename);
     }
 }

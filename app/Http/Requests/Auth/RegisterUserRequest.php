@@ -29,10 +29,10 @@ class RegisterUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'username' => ['required', 'string', 'lowercase', 'min:3', 'max:20', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'lowercase', 'min:3', 'max:20', 'regex:/^[a-zA-Z0-9_\.]+$/', 'unique:'.User::class],
             'role' => ['required', new Enum(UserRole::class)],
-            'logo' => ['required', File::image(true), 'max:2048',],
+            'logo' => ['required', File::image(true), 'max:2048'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }

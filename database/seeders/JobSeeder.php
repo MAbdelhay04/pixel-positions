@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\JobListing;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Auth;
 
 class JobSeeder extends Seeder
 {

@@ -2,7 +2,6 @@
 
 use App\Enums\UserRole;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');

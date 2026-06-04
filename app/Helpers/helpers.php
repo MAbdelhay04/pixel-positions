@@ -6,7 +6,7 @@ use Illuminate\Notifications\DatabaseNotification;
 if (! function_exists('searchLike')) {
     function searchLike(mixed $value)
     {
-        return '%' . preg_replace('/\s+/', '%', trim((string)$value)) . '%';
+        return '%'.preg_replace('/\s+/', '%', trim((string) $value)).'%';
     }
 }
 

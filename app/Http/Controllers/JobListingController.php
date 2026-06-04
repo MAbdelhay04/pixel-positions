@@ -48,6 +48,7 @@ class JobListingController extends Controller
     public function create()
     {
         Gate::authorize('create', JobListing::class);
+
         return view('jobs.create');
     }
 
@@ -73,6 +74,7 @@ class JobListingController extends Controller
     public function edit(JobListing $job)
     {
         Gate::authorize('update', $job);
+
         return view('jobs.edit', ['job' => $job]);
     }
 
@@ -95,7 +97,7 @@ class JobListingController extends Controller
         $job->update(['status' => $request->validated('status')]);
 
         return back()->with('success', __('Job “:title” status updated to :status.', [
-            'title'  => $job->title,
+            'title' => $job->title,
             'status' => $job->refresh()->status->label(),
         ]));
     }

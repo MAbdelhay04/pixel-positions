@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Application;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreApplicationRequest extends FormRequest
@@ -31,7 +31,7 @@ class StoreApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'resume'       => ['required', 'file', 'mimes:pdf,docx', 'max:5120'],
+            'resume' => ['required', 'file', 'mimes:pdf,docx', 'max:5120'],
             'cover_letter' => ['nullable', 'string', 'max:5000'],
         ];
     }

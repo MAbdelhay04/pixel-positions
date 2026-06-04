@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read_all');
 
     // Employer only
-    Route::middleware('role:' . UserRole::Employer->value)->group(function () {
+    Route::middleware('role:'.UserRole::Employer->value)->group(function () {
         Route::resource('jobs', JobListingController::class)->except(['index', 'show']);
         Route::patch('/jobs/{job}/status', [JobListingController::class, 'updateStatus'])->name('jobs.update_status');
         Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('applications.index');
@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Candidate only
-    Route::middleware('role:' . UserRole::Candidate->value)->group(function () {
+    Route::middleware('role:'.UserRole::Candidate->value)->group(function () {
         Route::post('/jobs/{job}/applications', [ApplicationController::class, 'store'])->name('applications.store');
     });
 });
@@ -64,4 +64,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/candidates/{candidate}', [UserController::class, 'showCandidate'])->name('candidates.show');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
