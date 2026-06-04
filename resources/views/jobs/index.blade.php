@@ -3,7 +3,7 @@
     <main
         class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
         x-data="ajaxSearch({
-            url: '{{ ($tag ?? false) ? route('jobs.index_tag', $tag) : route('jobs.index') }}',
+            url: '{{ ($tag ?? false) ? route('jobs.index_tag', $tag) : (($employer ?? false) ? route('companies.jobs', $employer) : route('jobs.index')) }}',
             resultsSelector: '#jobs-results'
         })">
 
@@ -16,6 +16,8 @@
                 <h1 class="mt-3 text-4xl font-bold tracking-normal text-gray-950 dark:text-white sm:text-5xl">
                     @if($tag ?? false)
                     Open Jobs tagged "{{ $tag->name }}"
+                    @elseif($employer ?? false)
+                    Open Jobs at {{ $employer->name }}
                     @else
                     Find your next role
                     @endif
@@ -23,6 +25,9 @@
                 <p class="mt-4 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-400">
                     @if($tag ?? false)
                     Showing jobs tagged with <span class="font-semibold text-gray-950 dark:text-white">{{ $tag->name }}</span>.
+                    <a href="{{ route('jobs.index') }}" class="text-blue-700 underline dark:text-blue-400">View all jobs</a>
+                    @elseif($employer ?? false)
+                    Browse open roles from <a href="{{ route('companies.show', $employer) }}" class="font-semibold text-blue-700 underline dark:text-blue-400">{{ $employer->name }}</a>.
                     <a href="{{ route('jobs.index') }}" class="text-blue-700 underline dark:text-blue-400">View all jobs</a>
                     @else
                     Browse current job listings from teams hiring through {{ config('app.name', 'Laravel') }}.
@@ -39,7 +44,7 @@
 
         {{-- Search & Filters --}}
         <div class="mt-6">
-            <x-job-search :action="($tag ?? false) ? route('jobs.index_tag', $tag) : route('jobs.index')" />
+            <x-job-search :action="($tag ?? false) ? route('jobs.index_tag', $tag) : (($employer ?? false) ? route('companies.jobs', $employer) : route('jobs.index'))" />
         </div>
 
         {{-- Loading spinner --}}

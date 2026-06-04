@@ -10,11 +10,23 @@ $applicationsCount = $job->applications_count ?? $job->applications()->count();
 
 <x-panel class="group flex h-full flex-col transition-shadow duration-200 hover:shadow-md">
     <div class="flex items-start gap-3">
+        @if ($job->employer)
+        <a href="{{ route('companies.show', $job->employer) }}" class="shrink-0">
+            <x-profile-logo :user="$job->employer" width="44" />
+        </a>
+        @else
         <x-profile-logo :user="$job->employer" width="44" />
+        @endif
 
         <div class="min-w-0">
             <p class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                {{ $job->employer?->name ?? 'Hiring team' }}
+                @if ($job->employer)
+                <a href="{{ route('companies.show', $job->employer) }}" class="transition-colors hover:text-indigo-700 dark:hover:text-indigo-400">
+                    {{ $job->employer->name }}
+                </a>
+                @else
+                {{ __('Hiring team') }}
+                @endif
             </p>
 
             @if ($job->category)

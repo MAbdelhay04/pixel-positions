@@ -6,13 +6,15 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobListingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/jobs');
-
 // Public
+Route::redirect('/', '/jobs');
 Route::get('/jobs', [JobListingController::class, 'index'])->name('jobs.index');
 Route::get('/tags/{tag}/jobs', [JobListingController::class, 'indexByTag'])->name('jobs.index_tag');
+Route::get('/companies/{employer}', [UserController::class, 'showEmployer'])->name('companies.show');
+Route::get('/companies/{employer}/jobs', [JobListingController::class, 'indexByEmployer'])->name('companies.jobs');
 
 // Authenticated
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -42,7 +44,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Public
 Route::get('/jobs/{job}', [JobListingController::class, 'show'])->name('jobs.show');
 
-
 // Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -50,6 +51,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/logo', [ProfileController::class, 'updateLogo'])->name('profile.logo');
     Route::patch('/profile/skills', [ProfileController::class, 'updateSkills'])->name('profile.skills');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/candidate/profile', [UserController::class, 'candidate'])->name('users.candidate.show');
+    Route::get('/candidate/profile/edit', [UserController::class, 'editCandidate'])->name('users.candidate.edit');
+    Route::patch('/candidate/profile', [UserController::class, 'updateCandidate'])->name('users.candidate.update');
+
+    Route::get('/employer/profile', [UserController::class, 'employer'])->name('users.employer.show');
+    Route::get('/employer/profile/edit', [UserController::class, 'editEmployer'])->name('users.employer.edit');
+    Route::patch('/employer/profile', [UserController::class, 'updateEmployer'])->name('users.employer.update');
+    Route::get('/company/settings', [UserController::class, 'companySettings'])->name('users.employer.settings');
+
+    Route::get('/candidates/{candidate}', [UserController::class, 'showCandidate'])->name('candidates.show');
 });
 
 require __DIR__ . '/auth.php';

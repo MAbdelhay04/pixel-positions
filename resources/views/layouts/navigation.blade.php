@@ -55,6 +55,22 @@
                         </div>
 
                         <div class="py-1">
+                            @if (Auth::user()->isCandidate())
+                            <x-dropdown-link :href="route('users.candidate.show')">
+                                {{ __('Candidate Profile') }}
+                            </x-dropdown-link>
+                            @endif
+
+                            @if (Auth::user()->isEmployer())
+                            <x-dropdown-link :href="route('users.employer.show')">
+                                {{ __('Company Profile') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('users.employer.settings')">
+                                {{ __('Company Settings') }}
+                            </x-dropdown-link>
+                            @endif
+
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
@@ -140,6 +156,22 @@
             <x-responsive-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.*')">
                 {{ __('Notifications') }}
             </x-responsive-nav-link>
+
+            @if (Auth::user()->isCandidate())
+            <x-responsive-nav-link :href="route('users.candidate.show')" :active="request()->routeIs('users.candidate.*')">
+                {{ __('Candidate Profile') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if (Auth::user()->isEmployer())
+            <x-responsive-nav-link :href="route('users.employer.show')" :active="request()->routeIs('users.employer.show', 'users.employer.edit')">
+                {{ __('Company Profile') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('users.employer.settings')" :active="request()->routeIs('users.employer.settings')">
+                {{ __('Company Settings') }}
+            </x-responsive-nav-link>
+            @endif
 
             <x-responsive-nav-link :href="route('profile.edit')">
                 {{ __('Profile') }}

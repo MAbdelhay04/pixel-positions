@@ -5,9 +5,11 @@
 
     <div class="flex items-start justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
-            <x-profile-logo :user="$application->candidate" width="40" />
+            <a href="{{ route('candidates.show', $application->candidate) }}" class="shrink-0">
+                <x-profile-logo :user="$application->candidate" width="40" />
+            </a>
             <div class="min-w-0">
-                <a href="{{ route('applications.show', $application) }}"
+                <a href="{{ route('candidates.show', $application->candidate) }}"
                     class="font-semibold text-gray-950 hover:text-indigo-700 dark:text-white dark:hover:text-indigo-400 transition-colors duration-150">
                     {{ $application->candidate->name }}
                 </a>
@@ -38,6 +40,11 @@
                     d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
             </svg>
             {{ __('Download Resume') }}
+        </a>
+
+        <a href="{{ route('applications.show', $application) }}"
+            class="text-xs font-medium text-gray-500 transition-colors duration-150 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            {{ __('View Application') }}
         </a>
 
         <span class="text-xs text-gray-400 dark:text-gray-500">

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\ApplicationStatus;
+use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 #[Fillable(['job_id', 'candidate_id', 'cover_letter', 'resume', 'status'])]
 class Application extends Model
 {
-    use HasUuids;
+    /** @use HasFactory<ApplicationFactory> */
+    use HasFactory, HasUuids;
 
     /**
      * Get the attributes that should be cast.

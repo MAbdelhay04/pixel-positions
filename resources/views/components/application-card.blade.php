@@ -9,7 +9,10 @@
                 {{ $application->job->title }}
             </a>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {{ $application->job->employer->name }}
+                <a href="{{ route('companies.show', $application->job->employer) }}"
+                    class="transition-colors duration-150 hover:text-indigo-700 dark:hover:text-indigo-400">
+                    {{ $application->job->employer->name }}
+                </a>
             </p>
         </div>
 

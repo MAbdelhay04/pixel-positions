@@ -2,62 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\JobStatus;
 use App\Http\Requests\StoreJobListingRequest;
 use App\Http\Requests\UpdateJobListingRequest;
 use App\Http\Requests\UpdateJobListingStatusRequest;
 use App\Models\JobListing;
 use App\Models\Tag;
+use App\Models\User;
+use App\Services\JobListingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class JobListingController extends Controller
 {
+    public function __construct(private JobListingService $service) {}
+
     public function index()
     {
-        $jobs = JobListing::with(['employer', 'skills', 'tags', 'category'])
-            ->withCount('applications')
-            ->when(
-                Auth::check() && Auth::user()->isCandidate(),
-                fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
-            )
-            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
-            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
-            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
-            ->where('status', JobStatus::Open)
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+        $jobs = $this->service->all();
 
-        if (isAjax()) {
-            return view('jobs._results', compact('jobs'));
-        }
-
-        return view('jobs.index', compact('jobs'));
+        return isAjax()
+            ? view('jobs._results', compact('jobs'))
+            : view('jobs.index', compact('jobs'));
     }
 
     public function indexByTag(Tag $tag)
     {
-        $jobs = $tag->jobs()
-            ->with(['employer', 'skills', 'tags', 'category'])
-            ->withCount('applications')
-            ->when(
-                Auth::check() && Auth::user()->isCandidate(),
-                fn($q) => $q->with(['applications' => fn($q) => $q->where('candidate_id', Auth::id())])
-            )
-            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
-            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
-            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
-            ->where('status', JobStatus::Open)
-            ->latest()
-            ->paginate()
-            ->withQueryString();
+        $jobs = $this->service->byTag($tag);
 
-        if (isAjax()) {
-            return view('jobs._results', compact('jobs'));
-        }
+        return isAjax()
+            ? view('jobs._results', compact('jobs'))
+            : view('jobs.index', compact('jobs', 'tag'));
+    }
 
-        return view('jobs.index', compact('jobs', 'tag'));
+    public function indexByEmployer(User $employer)
+    {
+        abort_unless($employer->isEmployer(), 404);
+
+        $jobs = $this->service->byEmployer($employer);
+
+        return isAjax()
+            ? view('jobs._results', compact('jobs'))
+            : view('jobs.index', compact('jobs', 'employer'));
     }
 
     public function create()
@@ -107,13 +92,11 @@ class JobListingController extends Controller
 
     public function updateStatus(UpdateJobListingStatusRequest $request, JobListing $job)
     {
-        $status = $request->enum('status', JobStatus::class);
-
-        $job->update(['status' => $status]);
+        $job->update(['status' => $request->validated('status')]);
 
         return back()->with('success', __('Job “:title” status updated to :status.', [
             'title'  => $job->title,
-            'status' => $status->label(),
+            'status' => $job->refresh()->status->label(),
         ]));
     }
 

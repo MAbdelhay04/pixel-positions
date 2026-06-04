@@ -48,3 +48,20 @@ function something()
 {
     // ..
 }
+
+function fakeStorage(string $diskName): \Illuminate\Filesystem\FilesystemAdapter
+{
+    $config = config("filesystems.disks.{$diskName}");
+    $config['root'] = storage_path("framework/testing/disks/{$diskName}-" . str()->uuid());
+
+    $disk = \Illuminate\Support\Facades\Storage::createLocalDriver($config);
+
+    \Illuminate\Support\Facades\Storage::set($diskName, $disk);
+
+    return $disk;
+}
+
+function fakePublicStorage(): \Illuminate\Filesystem\FilesystemAdapter
+{
+    return fakeStorage('public');
+}

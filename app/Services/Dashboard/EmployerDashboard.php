@@ -6,21 +6,14 @@ namespace App\Services\Dashboard;
 
 use App\Enums\JobStatus;
 use App\Models\User;
+use App\Services\JobListingService;
 
 class EmployerDashboard implements DashboardInterface
 {
+    public function __construct(private JobListingService $service) {}
     public function render(User $user)
     {
-        $jobs = $user->jobs()
-            ->with(['employer', 'skills', 'tags', 'category'])
-            ->withCount('applications')
-            ->when(request('q'), fn($q, $v) => $q->where('title', 'like', searchLike($v)))
-            ->when(request('type'), fn($q, $v) => $q->whereIn('type', (array) $v))
-            ->when(request('location'), fn($q, $v) => $q->whereIn('location', (array) $v))
-            ->when(request('status'), fn($q, $v) => $q->whereIn('status', (array) $v))
-            ->latest()
-            ->paginate(9)
-            ->withQueryString();
+        $jobs = $this->service->byEmployer(employer: $user, useStatusFilter: true);
 
         if (isAjax()) {
             return view('dashboard._employer_results', compact('jobs'));

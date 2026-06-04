@@ -31,9 +31,10 @@ class UpdateJobListingStatusRequest extends FormRequest
                 'required',
                 new Enum(JobStatus::class),
                 function ($attribute, $value, $fail) use ($job) {
-                    $next = JobStatus::from($value);
-
-                    if (! $job->status->canTransitionTo($next)) {
+                    $next = JobStatus::tryFrom($value);
+                    if (! $next) {
+                        $fail(__('Invalid status.'));
+                    } elseif (! $job->status->canTransitionTo($next)) {
                         $fail(__('Invalid status transition.'));
                     }
                 },

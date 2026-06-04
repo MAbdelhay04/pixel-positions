@@ -29,12 +29,23 @@ use App\Enums\ApplicationStatus;
                 <div
                     class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
                     <div class="flex items-center gap-4">
-                        <x-profile-logo :user="$application->candidate" width="52" />
+                        <a href="{{ route('candidates.show', $application->candidate) }}">
+                            <x-profile-logo :user="$application->candidate" width="52" />
+                        </a>
                         <div>
-                            <p class="font-bold text-gray-950 dark:text-white">{{ $application->candidate->name }}</p>
+                            <a href="{{ route('candidates.show', $application->candidate) }}"
+                                class="font-bold text-gray-950 transition-colors hover:text-indigo-700 dark:text-white dark:hover:text-indigo-400">
+                                {{ $application->candidate->name }}
+                            </a>
                             <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@' .
                                 $application->candidate->username }}</p>
                         </div>
+                    </div>
+                    <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10">
+                        <a href="{{ route('candidates.show', $application->candidate) }}"
+                            class="text-sm font-semibold text-indigo-700 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+                            {{ __('View Candidate Profile') }}
+                        </a>
                     </div>
                 </div>
 

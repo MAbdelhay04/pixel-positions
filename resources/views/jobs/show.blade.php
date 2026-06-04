@@ -6,7 +6,13 @@
                     {{ $job->title }}
                 </h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ $job->employer?->name ?? 'Hiring team' }}
+                    @if ($job->employer)
+                    <a href="{{ route('companies.show', $job->employer) }}" class="transition-colors hover:text-indigo-700 dark:hover:text-indigo-400">
+                        {{ $job->employer->name }}
+                    </a>
+                    @else
+                    {{ __('Hiring team') }}
+                    @endif
                 </p>
             </div>
 
@@ -85,6 +91,28 @@
                 </div>
 
                 <x-job-status-update :job="$job" />
+
+                @if ($job->employer)
+                <a href="{{ route('companies.show', $job->employer) }}"
+                    class="flex items-center justify-between gap-3 rounded-lg border p-4 text-sm font-semibold transition-colors duration-200 border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50
+                        dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-white/20 dark:hover:bg-white/10">
+                    <span>{{ __('View Company Profile') }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <a href="{{ route('companies.jobs', $job->employer) }}"
+                    class="flex items-center justify-between gap-3 rounded-lg border p-4 text-sm font-semibold transition-colors duration-200 border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50
+                        dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-white/20 dark:hover:bg-white/10">
+                    <span>{{ __('More Jobs From This Company') }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                @endif
 
                 {{-- Employer: view applications --}}
                 @auth

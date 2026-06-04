@@ -11,7 +11,7 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
-    Storage::fake('public');
+    fakePublicStorage();
 
     $response = $this->post('/register', [
         'name' => 'Test User',
